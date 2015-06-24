@@ -1,0 +1,245 @@
+﻿/*
+This file was created by Felbrigg Herriot and is released under a Creative Commons Attribution NonCommercial ShareAlike 3.0 License
+*/
+
+
+body 
+{
+    background-image:url('../Assets/Wood.jpg');
+}
+
+.gamewrapper
+{
+    /*border:thin solid white;*/
+}
+
+.playarea
+{
+    /*border:thin solid green;*/
+    margin:2px;
+    min-width:750px;
+}
+
+.deckcolumn
+{
+    border:thin solid green;
+    margin:2px;
+    min-width:150px;
+    width:20%;
+    height:500px; 
+    display:inline-block;
+    float:left;
+    text-align:center;   
+}
+
+.titlerow
+{
+    border:thin solid rgba(255,0,0,0.7);
+    height:100px;
+    margin:2px;
+    min-width:750px;
+    text-align:center;
+    vertical-align:middle;
+    color:White;
+    background-color:rgba(255,0,0,0.3);  
+    padding:5px;      
+}
+
+#title
+{
+    font-family:Arial;
+    font-size:60pt;
+    font-weight:bold;
+    text-shadow:1px 1px 0px Black; /*#cc9f52;*/
+}
+
+.button
+{
+    clear:left;
+    /*float:left;*/
+    margin-bottom:2px;
+	-moz-box-shadow:inset 0px 1px 0px 0px #fce2c1;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #fce2c1;
+	box-shadow:inset 0px 1px 0px 0px #fce2c1;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffc477), color-stop(1, #fb9e25) );
+	background:-moz-linear-gradient( center top, #ffc477 5%, #fb9e25 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffc477', endColorstr='#fb9e25');
+	background-color:#ffc477;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #eeb44f;
+	display:inline-block;
+	color:#ffffff;
+	font-family:arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #cc9f52;
+	width:130px;
+}
+
+.button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fb9e25), color-stop(1, #ffc477) );
+	background:-moz-linear-gradient( center top, #fb9e25 5%, #ffc477 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb9e25', endColorstr='#ffc477');
+	background-color:#fb9e25;
+	cursor:pointer;
+}
+
+.button:active {
+	position:relative;
+	top:1px;
+}
+
+
+.gamerow
+{
+    border:thin solid rgba(255,0,0,0.3);
+    margin:2px;
+    float:left;
+    height:163px;
+    width:78%;
+    text-align:center;
+    min-width:550px;
+    background-color:rgba(255,0,0,0.2);
+}
+
+.cardspace
+{
+    width:100px;
+    height:150px;
+    border:thin solid black;
+    margin:2px;
+    display:inline-block;
+}
+
+.deckcolumn .cardspace
+{
+    width:100px;
+    height:150px;
+    border:thin solid black;
+    margin:2px;
+    display:inline-block;
+    background-color:blue
+}
+
+.backgroundtext
+{
+    color:White;
+    font-family:Arial;
+    font-size:70pt;
+    font-weight:bold;
+    z-index :-1;
+    position:absolute;
+    margin-top:20px;
+    margin-left:20px;
+}
+
+.decklabel
+{
+    color:Black;
+    font-weight:bolder;
+    text-align:center;
+    font-family:Arial;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.card
+{
+    width:100px;
+    height:150px;
+    position:absolute;
+}
+
+.cardselected
+{
+    width:100px;
+    height:150px;
+    border:thick solid blue;
+    position:absolute;
+}
+
+/*
+.card img
+{
+    width:100px;
+    height:150px;
+}
+*/
+.hidden
+{
+    display:none;
+}
+
+.floatthisleft
+{
+    float:left;
+}
+
+.whatsthestory
+{
+    text-align:center;
+    position:fixed;
+    top:50%;
+    left: 50%;
+    width:40em;
+    height:25em;
+    margin-top: -9em; /*set to a negative number 1/2 of your height*/
+    margin-left: -15em; /*set to a negative number 1/2 of your width*/
+    border: 5px solid rgba(133,22,50,0.9);
+    background-color: rgba(233,122,50,0.95);
+    color:White;
+    font-family:Arial;
+    font-weight:normal;
+    font-size:10pt;
+    padding: 10px;     
+}
+
+.gameovernomoves
+{
+    text-align:center;
+    position:fixed;
+    top:50%;
+    left: 50%;
+    width:30em;
+    height:18em;
+    margin-top: -9em; /*set to a negative number 1/2 of your height*/
+    margin-left: -15em; /*set to a negative number 1/2 of your width*/
+    border: 5px solid rgba(133,22,50,0.9);
+    background-color: rgba(233,122,50,0.75);
+    color:Blue;
+    font-family:Arial;
+    font-weight:bold;
+    font-size:15pt;
+    padding: 10px;
+    text-shadow:1px 1px 0px Black; /*#cc9f52;*/ 
+}
+
+
+#hintspace
+{
+    height:50px;
+    
+}
+
+#hintspacecontainer
+{
+    /*border:1px solid black;*/
+    /*background-color: Green;*/
+    color:White;
+    font-family:Arial;
+    font-weight:bold;
+    font-size:10pt;
+    font-style :italic;
+    
+}
+
+#gameOverPalace
+{
+    text-shadow:1px 1px 0px Black; /*#cc9f52;*/
+}
+
+
