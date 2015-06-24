@@ -1,5 +1,5 @@
 ﻿//
-// This file was created by Felbrigg Herriot and is released under a Creative Commons Attribution NonCommercial ShareAlike 3.0 License
+// This file was created by Felbrigg Herriot and remixed by M. C. DeMarco, and is released under a Creative Commons Attribution NonCommercial ShareAlike 3.0 License
 //
 
 //
@@ -15,22 +15,22 @@ var debugOn = false;
 function initialise_GamePage() {
     // set up the click events for the story popup
     $('#showStoryButton').click(function () {
-        $('#whatsthestory').removeClass('hidden').addClass('whatsthestory');
+        $('#whatsthestory').show();
     });
     $('#closeStoryButton').click(function () {
-        $('#whatsthestory').removeClass('whatsthestory').addClass('hidden');
+        $('#whatsthestory').hide();
     });
     $('#closeNoMoves').click(function () {
-        $('#gameOverNoMoves').removeClass('whatsthestory').addClass('hidden');
+        $('#gameOverNoMoves').hide();
     });
     $('#closePalace').click(function () {
-        $('#gameOverPalace').removeClass('whatsthestory').addClass('hidden');
+        $('#gameOverPalace').hide();
     });
     $('#closeCreditsButton').click(function () {
-        $('#gameCredits').removeClass('whatsthestory').addClass('hidden');
+        $('#gameCredits').hide();
     });
     $('#creditsButton').click(function () {
-        $('#gameCredits').removeClass('hidden').addClass('whatsthestory');
+        $('#gameCredits').show();
     });
 
     // event for the startbuttonclick
@@ -109,9 +109,9 @@ function startButtonClick() {
     gameOVER = false;
     score = 0;
 
-    $('#gameOverNoMoves').removeClass('gameovernomoves').addClass('hidden');
-    $('#whatsthestory').removeClass('whatsthestory').addClass('hidden');
-    $('#gameOverPalace').removeClass('whatsthestory').addClass('hidden');
+    $('#gameOverNoMoves').hide();
+    $('#whatsthestory').hide();
+    $('#gameOverPalace').hide();
 
     moveDeckBackToDrawDeck();
     decktetShuffle(deck);
@@ -127,9 +127,9 @@ function moveDeckBackToDrawDeck() {
     for (var i = 0; i < deck.length; i++) {
         deck[i].Selected = false;
         $(deck[i].selector).removeClass('cardselected').addClass('card');
-        //moveCardToSpace(i, 'DrawDeck');
         moveCardToSpace(i, 'drawDeckLocation');
     }
+	$("#drawDeckLocation").addClass("full");
 }
 
 
@@ -165,7 +165,7 @@ function dealToResourceSpace(spaceName) {
                     pushCardToPalace(c);
                     returnValue = false;
                 } else {
-                    moveCardToSpace(c, spaceName)
+                    moveCardToSpace(c, spaceName);
                     returnValue = true;
                 }
             }
@@ -212,7 +212,7 @@ function pushCardToPalace(indexOfCard) {
     else {
         // no palace spaces available the game is over
         gameOVER = true;
-        $('#gameOverPalace').removeClass('hidden').addClass('gameovernomoves');
+        $('#gameOverPalace').show();
         $('#finalScore2').html(score.toString());
     }
 
@@ -236,6 +236,7 @@ function dealToTheCity() {
 function moveCardToSpace(indexOfCard, spaceID) {
     // find target details
     var targetOffset = $('#' + spaceID).offset();
+	if (spaceID != "drawDeckLocation") $(deck[indexOfCard].selector).show();
     $(deck[indexOfCard].selector).offset(targetOffset);
     // reset cards location
     deck[indexOfCard].Location = spaceID;
@@ -279,7 +280,7 @@ function createOnScreenCards() {
     for (var i = deck.length - 1; i >= 0; i--) {
         createOnScreenCard(deck[i]);
         $(deck[i].selector).offset({ top: p.top, left: p.left });
-        $(deck[i].selector).click(function () { cardClick(this.id) });
+        $(deck[i].selector).click(function () { cardClick(this.id); });
     }
     pleaseWaitOff();
 }
@@ -403,7 +404,7 @@ function getResourceCount() {
 function discardCard(cardIndex) {
     deck[cardIndex].Selected = false; // deselect it card
     $(deck[cardIndex].selector).removeClass('cardselected').addClass('card'); // remove selected class
-    moveCardToSpace(cardIndex, 'discardDeckLocation')
+    moveCardToSpace(cardIndex, 'discardDeckLocation');
 }
 
 //
@@ -499,7 +500,7 @@ function adamanCreateDeck() {
     adamanDeck = decktetShuffle(adamanDeck);
     for (var i = 0; i < adamanDeck.length; i++) {
         adamanDeck[i].Location = 'drawDeckLocation';
-        adamanDeck[i].divID = adamanDeck[i].Name.replace(/\s+/g, '')
+        adamanDeck[i].divID = adamanDeck[i].Name.replace(/\s+/g, '');
         adamanDeck[i].selector = '#' + adamanDeck[i].divID;
     }
     return adamanDeck;
@@ -509,15 +510,15 @@ function adamanCreateDeck() {
 // create an on-screen card element
 //
 function createOnScreenCard(card) {
-    var imageLit = '<img id="' + card.divID + '" src="CardImages/' + card.Image + '" title="' + card.Name + '" class="card"/>';
-    $(imageLit).appendTo('#gamewrapper');
+    var imageLit = '<img id="' + card.divID + '" src="CardImages/' + card.Image + '" title="' + card.Name + '" class="card' + (card.Face ? ' face' : '') +  '"/>';
+    $(imageLit).appendTo('#gamewrapper').hide();
 }
 
 //
 // "Please wait" functions
 //
-function pleaseWaitOn() { $('#pleaseWait').removeClass('hidden').addClass('whatsthestory'); }
-function pleaseWaitOff() { $('#pleaseWait').removeClass('whatsthestory').addClass('hidden'); }
+function pleaseWaitOn() { $('#pleaseWait').show();}
+function pleaseWaitOff() { $('#pleaseWait').hide();}
 
 //
 // The Game is over as there are no available moves
@@ -525,7 +526,7 @@ function pleaseWaitOff() { $('#pleaseWait').removeClass('whatsthestory').addClas
 function gameOverNoMovesleft() {
     gameOVER = true;
     $('#finalScore').html(score.toString());
-    $('#gameOverNoMoves').removeClass('hidden').addClass('gameovernomoves');
+    $('#gameOverNoMoves').show();
 }
 
 
