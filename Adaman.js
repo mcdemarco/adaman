@@ -7,7 +7,7 @@
 //
 var gameOVER = false;       // overall flag to indicate the game is over
 var score = 0;
-var debugOn = false;
+var personalityCount = 0;
 
 //
 // runs when the page first loads
@@ -17,17 +17,12 @@ function initialise_GamePage() {
     $('#showStoryButton').click(function () {
         $('#whatsthestory').show();
     });
-    $('#closeStoryButton').click(function () {
-        $('#whatsthestory').hide();
+    $('.close.button').click(function () {
+        $('.panel').hide();
     });
-    $('#closeNoMoves').click(function () {
-        $('#gameOverNoMoves').hide();
-    });
-    $('#closePalace').click(function () {
-        $('#gameOverPalace').hide();
-    });
-    $('#closeCreditsButton').click(function () {
-        $('#gameCredits').hide();
+    $('#gameOverCloseButton').click(function () {
+		//semi clean up
+        moveDeckBackToDrawDeck();
     });
     $('#creditsButton').click(function () {
         $('#gameCredits').show();
@@ -52,9 +47,9 @@ function initialise_GamePage() {
 function isThereAMove() {
     var returnValue = false; // assume can not go.
 
-    // iterate through the Palace & city spaces, and check each card
+    // iterate through the Palace & capital spaces, and check each card
     for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cit') {
+        if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
             returnValue = canCardBeBeatenByResources(i,false);
             if (returnValue) {
                 break;
@@ -82,14 +77,8 @@ function canCardBeBeatenByResources(targetCard, onlyCheckSelectedResourceCards) 
 
                 // does this resource card match the target at all?
                 if (decktetDoCardsMatchOnAnySuit(targetCard, i)) {
-                    //console.log('    cards match for a score of ' + deck[i].Value)
-
                     // we have a match, so add the cards score
                     matchingCardScores += deck[i].Value;
-
-                    //console.log('    total matched score of ' + matchingCardScores)
-                } else {
-                    //console.log('    cards DONT match for a score of ' + deck[i].Value)
                 }
             }
         }
@@ -108,25 +97,26 @@ function canCardBeBeatenByResources(targetCard, onlyCheckSelectedResourceCards) 
 function startButtonClick() {
     gameOVER = false;
     score = 0;
+	personalityCount = 0;
 
-    $('#gameOverNoMoves').hide();
-    $('#whatsthestory').hide();
-    $('#gameOverPalace').hide();
+	$("#runningScore").html(score);
+	$("#personalityCount").html(personalityCount);
+    $('.panel').hide();
 
     moveDeckBackToDrawDeck();
     decktetShuffle(deck);
-    dealToTheCity();
+    dealToTheCapital();
     dealToTheResources();
     var canContinue = isThereAMove();
     if (!canContinue) {
-        gameOverNoMovesleft();
+        gameIsOver();
     }
 }
 
 function moveDeckBackToDrawDeck() {
     for (var i = 0; i < deck.length; i++) {
         deck[i].Selected = false;
-        $(deck[i].selector).removeClass('cardselected').addClass('card');
+        $(deck[i].selector).removeClass('cardselected').addClass('card').hide();
         moveCardToSpace(i, 'drawDeckLocation');
     }
 	$("#drawDeckLocation").addClass("full");
@@ -143,11 +133,11 @@ function dealToTheResources() {
     while (!dealToResourceSpace('resource3') && !gameOVER) { };
     while (!dealToResourceSpace('resource4') && !gameOVER) { };
     while (!dealToResourceSpace('resource5') && !gameOVER) { };
-    while (!dealToResourceSpace('city1') && !gameOVER) { };
-    while (!dealToResourceSpace('city2') && !gameOVER) { };
-    while (!dealToResourceSpace('city3') && !gameOVER) { };
-    while (!dealToResourceSpace('city4') && !gameOVER) { };
-    while (!dealToResourceSpace('city5') && !gameOVER) { };
+    while (!dealToResourceSpace('capital1') && !gameOVER) { };
+    while (!dealToResourceSpace('capital2') && !gameOVER) { };
+    while (!dealToResourceSpace('capital3') && !gameOVER) { };
+    while (!dealToResourceSpace('capital4') && !gameOVER) { };
+    while (!dealToResourceSpace('capital5') && !gameOVER) { };
 }
 
 //
@@ -171,7 +161,6 @@ function dealToResourceSpace(spaceName) {
             }
         } else {
             // no cards to deal
-            // alert('in here'); // this alert seemed to stop the locking issue.
             returnValue = true;
         }
 
@@ -179,6 +168,11 @@ function dealToResourceSpace(spaceName) {
         // there is a card in the space
         returnValue = true;
     }
+	if (!isThereCardInSpace('drawDeckLocation')) {
+		//We used the last card.
+		$("#drawDeckLocation").removeClass("full");
+	}
+	
     return returnValue;
 }
 
@@ -211,23 +205,21 @@ function pushCardToPalace(indexOfCard) {
     }
     else {
         // no palace spaces available the game is over
-        gameOVER = true;
-        $('#gameOverPalace').show();
-        $('#finalScore2').html(score.toString());
+        gameIsOver("palace");
     }
 
     return returnValue;
 }
 
 //
-// Deal cards from the draw pile into the City Spaces
+// Deal cards from the draw pile into the Capital Spaces
 //
-function dealToTheCity() {
-    if (!isThereCardInSpace('city1')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'city1'); }
-    if (!isThereCardInSpace('city2')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'city2'); }
-    if (!isThereCardInSpace('city3')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'city3'); }
-    if (!isThereCardInSpace('city4')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'city4'); }
-    if (!isThereCardInSpace('city5')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'city5'); }
+function dealToTheCapital() {
+    if (!isThereCardInSpace('capital1')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital1'); }
+    if (!isThereCardInSpace('capital2')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital2'); }
+    if (!isThereCardInSpace('capital3')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital3'); }
+    if (!isThereCardInSpace('capital4')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital4'); }
+    if (!isThereCardInSpace('capital5')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital5'); }
 }
 
 //
@@ -303,9 +295,9 @@ function cardClick(theImageID) {
         // select card
 
         // if this card is on the palace line, deselect all other palace cards
-        if (deck[cardIndex].Location.substring(0, 3) == 'pal' || deck[cardIndex].Location.substring(0, 3) == 'cit') {
+        if (deck[cardIndex].Location.substring(0, 3) == 'pal' || deck[cardIndex].Location.substring(0, 3) == 'cap') {
             deselectAllCardsOnRow('palace');
-            deselectAllCardsOnRow('city');
+            deselectAllCardsOnRow('capital');
         }
 
         // mark the card as selected.
@@ -358,26 +350,22 @@ function cardClick(theImageID) {
                     }
                 } else {
                     // the card is a face card, so simply discard it
-                    // alert('about to discard target'); // seemed to help with locking
                     discardCard(targetCardIndex);
-                    // alert('after discarding target'); // seemed to help with lockeing
-
                 }
 
                 // Deal to resource line.
-                debugOn = true;
                 dealToTheResources();
 
                 // if there are no cards in the resource line, the game is over
                 if (getResourceCount() == 0) {
-                    //alert('TODO game is over cos the resource line is empty'); // this seemed to help with locking
+					//This would fall through to (and hopefully fail) the move check, but stop anyway.
+					gameIsOver();
                 }
             }
         }
 
         if (!isThereAMove()) {
-            gameOVER = true;
-            gameOverNoMovesleft();
+            gameIsOver();
         }
     }
 }
@@ -397,6 +385,24 @@ function getResourceCount() {
     return returnValue;
 }
 
+//
+// get the total card value in the resource line for scoring
+//
+function getResourceScore() {
+    var returnValue = 0;
+	var resourceCount = getResourceCount();
+	var resourceCounter = 0;
+
+    for (var i = 0; i < deck.length; i++) {
+        if (deck[i].Location.substring(0, 3) == 'res') {
+            returnValue += deck[i].Value;
+			resourceCounter++;
+            if (resourceCounter == resourceCount) { break; }
+        }
+    }
+    return returnValue;
+}
+
 
 //
 // Discard a selected card
@@ -405,6 +411,18 @@ function discardCard(cardIndex) {
     deck[cardIndex].Selected = false; // deselect it card
     $(deck[cardIndex].selector).removeClass('cardselected').addClass('card'); // remove selected class
     moveCardToSpace(cardIndex, 'discardDeckLocation');
+	if (deck[cardIndex].Face)
+		countPersonality();
+}
+
+function countPersonality() {
+	personalityCount++;
+	$("#personalityCount").html(personalityCount);
+	//The running score only changes for personalities, so though it was incremented elsewhere, update here.
+	$("#runningScore").html(score);
+	if (personalityCount == 11) {
+		gameIsOver("victory");
+	}
 }
 
 //
@@ -414,7 +432,7 @@ function getTargetCardIndex() {
     var returnValue = -1;
     for (var i = 0; i < deck.length; i++) {
         if (deck[i].Selected) {
-            if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cit') {
+            if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
                 returnValue = i;
                 break;        
             }
@@ -442,14 +460,14 @@ function canTargetBeDefeatedBySelectedResources() {
 //
 function checkIfTargetAndResourceCardsAreSelected() {
     var returnValue = false;
-    var palaceOrCityCardSelected = false;
+    var palaceOrCapitalCardSelected = false;
     var resourceCardSelected = false;
 
     for (var i = 0; i < deck.length; i++) {
         if (deck[i].Selected == true) {
-            if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cit') {
+            if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
                 //alert('selected ' + deck[i].Name);
-                palaceOrCityCardSelected = true;
+                palaceOrCapitalCardSelected = true;
             } else {
                 //alert('selected ' + deck[i].Name);
                 resourceCardSelected = true;
@@ -457,7 +475,7 @@ function checkIfTargetAndResourceCardsAreSelected() {
         }
     }
 
-    return (palaceOrCityCardSelected && resourceCardSelected);
+    return (palaceOrCapitalCardSelected && resourceCardSelected);
 }
 
 
@@ -523,12 +541,26 @@ function pleaseWaitOff() { $('#pleaseWait').hide();}
 //
 // The Game is over as there are no available moves
 //
-function gameOverNoMovesleft() {
+
+function gameIsOver(endCondition) {
     gameOVER = true;
+	endCondition = typeof endCondition !== 'undefined' ? endCondition : "noMoves";
+	if (endCondition == "victory") {
+		//We have some more scoring to do.
+		score += getResourceScore();
+		$('#runningScore').html(score.toString());
+	}
     $('#finalScore').html(score.toString());
-    $('#gameOverNoMoves').show();
+	switch(endCondition) {
+		case "victory":
+			$("#endCondition").html("Victory is yours!  You have control of everyone who matters and can safely seize the throne.");
+			break;
+		case "palace":
+			$("#endCondition").html("The opposition in the Palace has become too great.");
+			break;
+		default:
+			$("#endCondition").html("There are no more possible moves.");
+	}
+    $('#gameOver').show();
 }
-
-
-
 
