@@ -8,6 +8,7 @@
 var gameOVER = false;       // overall flag to indicate the game is over
 var score = 0;
 var personalityCount = 0;
+var discardCount = 0;
 
 //
 // runs when the page first loads
@@ -98,6 +99,7 @@ function startButtonClick() {
     gameOVER = false;
     score = 0;
 	personalityCount = 0;
+	discardCount = 0;
 
 	$("#runningScore").html(score);
 	$("#personalityCount").html(personalityCount);
@@ -229,7 +231,7 @@ function moveCardToSpace(indexOfCard, spaceID) {
     // find target details
     var targetOffset = $('#' + spaceID).offset();
 	if (spaceID != "drawDeckLocation") $(deck[indexOfCard].selector).show();
-    $(deck[indexOfCard].selector).offset(targetOffset);
+    $(deck[indexOfCard].selector).animate({left:targetOffset.left, top:targetOffset.top});
     // reset cards location
     deck[indexOfCard].Location = spaceID;
 }
@@ -408,8 +410,10 @@ function getResourceScore() {
 // Discard a selected card
 //
 function discardCard(cardIndex) {
+	discardCount++;
     deck[cardIndex].Selected = false; // deselect it card
     $(deck[cardIndex].selector).removeClass('cardselected').addClass('card'); // remove selected class
+	$(deck[cardIndex].selector).css("z-index",discardCount);
     moveCardToSpace(cardIndex, 'discardDeckLocation');
 	if (deck[cardIndex].Face)
 		countPersonality();

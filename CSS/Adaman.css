@@ -192,6 +192,7 @@ p.callout {
     font-size:12pt;
     margin: 5%;
     padding: 10px;     
+    z-index:50;
 }
 
 #gameovernomoves {
