@@ -11,16 +11,27 @@ body {
     color: #740;
 }
 
-.gamewrapper {
-    /*border:thin solid white;*/
+p {
+    font-family: 'Gill Sans', sans-serif;
+    text-align:justify;
 }
 
-.playarea {
+p.callout {
+    padding: 0 5%;
+    font-style:italic;
+}
+
+#gamewrapper {
+    padding:15px 5px 5px 5px;
+    white-space:nowrap;
+}
+
+#playarea {
+    min-width:780px;
     margin:2px;
-    min-width:750px;
 }
 
-.deckcolumn {
+#deckcolumn {
     margin:2px;
     min-width:150px;
     width:20%;
@@ -42,41 +53,39 @@ body {
     clear:both;
 }
 
-#title
-{
+#title {
     color: #b36e36;
     font-size:xx-large;
     font-weight:bold;
     text-shadow:1px 1px 0px #740;
 }
 
-.button
-{
+.button {
     clear:left;
     margin-bottom:2px;
     box-shadow:inset 0px 1px 0px 0px #fce2c1;
     background-color:#eac8ac;
-	background:linear-gradient(to bottom, #eac8ac, #b36e36);
-	border-radius:6px;
-	border:1px solid #b36e35;
-	display:inline-block;
-	white-space:nowrap;
-	color:#ffffff;
-	font-size:15px;
-	padding:6px 10px;
-	text-decoration:none;
-	text-shadow:1px 1px 0px #740;/*#cc9f52;*/
+    background:linear-gradient(to bottom, #eac8ac, #b36e36);
+    border-radius:6px;
+    border:1px solid #b36e35;
+    display:inline-block;
+    white-space:nowrap;
+    color:#ffffff;
+    font-size:15px;
+    padding:6px 10px;
+    text-decoration:none;
+    text-shadow:1px 1px 0px #740;/*#cc9f52;*/
 }
 
 .button:hover {
-	background-color:#b36e36;
-	background:linear-gradient(to bottom, #b36e36, #eac8ac);
-	cursor:pointer;
+    background-color:#b36e36;
+    background:linear-gradient(to bottom, #b36e36, #eac8ac);
+    cursor:pointer;
 }
 
 .button:active {
-	position:relative;
-	top:1px;
+    position:relative;
+    top:1px;
 }
 
 #startButton {
@@ -106,14 +115,12 @@ body {
     display:inline-block;
 }
 
-.deckcolumn .cardspace
-{
+#deckcolumn .cardspace {
     width:100px;
     height:150px;
     border:thin solid #740;
     margin:2px;
     display:inline-block;
-/*    background-color:#AF612F; */
 }
 
 .backgroundtext, .decklabel {
@@ -169,13 +176,13 @@ body {
     float:left;
 }
 
-.whatsthestory {
+.panel {
     display:none;
     text-align:center;
     position:absolute;
-    top:10%;
-    left: 10%;
-    width:80%;
+    top:0;
+    left:0;
+    width:auto;
     height:auto;
     border: 3px solid #740;
     border-radius: 12px;
@@ -183,45 +190,17 @@ body {
     color:white;
     font-weight:normal;
     font-size:12pt;
+    margin: 5%;
     padding: 10px;     
 }
 
-.gameovernomoves
-{
-    display:none;
-    text-align:center;
-    position:fixed;
-    top:50%;
-    left: 50%;
-    width:30em;
-    height:18em;
-    margin-top: -9em; /*set to a negative number 1/2 of your height*/
-    margin-left: -15em; /*set to a negative number 1/2 of your width*/
-    border: 5px solid rgba(133,22,50,0.9);
-    background-color: rgba(233,122,50,0.75);
-    color:rgb(133,22,50);
-    font-weight:bold;
-    font-size:15pt;
-    padding: 10px;
-    text-shadow:1px 1px 0px #740; /*#cc9f52;*/ 
-}
-
-
-#hintspace {
-    height:50px;
-}
-
-#hintspacecontainer
-{
-    color:white;
-    font-weight:bold;
-    font-size:10pt;
-    font-style :italic;
+#gameovernomoves {
+    text-shadow:1px 1px 0px #740;
 }
 
 #gameOverPalace
 {
-    text-shadow:1px 1px 0px #740; /*#cc9f52;*/
+    text-shadow:1px 1px 0px #740;
 }
 
 hr {

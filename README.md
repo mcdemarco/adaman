@@ -1,8 +1,12 @@
 # Adaman
 
+[Play!](http://mcdemarco.github.io/adaman/Adaman.html)
+
+## About
+
 This is a JavaScript implementation of Adaman, a solitaire game for the Decktet card system.  Both Adaman and Decktet were created by P.D. Magnus and released under a CC license.
 
-The JavaScript implementation is by Felbrigg Herriot, who released it under a Creative Commons Attribution NonCommercial ShareAlike 3.0 License.  
+The JavaScript implementation is by Felbrigg Herriot, who released it under a Creative Commons Attribution NonCommercial ShareAlike 3.0 License.
 
 All changes after the initial check-in are by M. C. DeMarco, under the same license.
 
