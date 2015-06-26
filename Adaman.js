@@ -119,7 +119,7 @@ function moveDeckBackToDrawDeck() {
     for (var i = 0; i < deck.length; i++) {
         deck[i].Selected = false;
         $(deck[i].selector).removeClass('cardselected').addClass('card').hide();
-        moveCardToSpace(i, 'drawDeckLocation');
+        moveCardToSpace(i, 'drawDeckLocation', 0);
     }
 	$("#drawDeckLocation").addClass("full");
 }
@@ -130,34 +130,29 @@ function moveDeckBackToDrawDeck() {
 // Note. any face cards go to the Palace
 //
 function dealToTheResources() {
-    while (!dealToResourceSpace('resource1') && !gameOVER) { };
-    while (!dealToResourceSpace('resource2') && !gameOVER) { };
-    while (!dealToResourceSpace('resource3') && !gameOVER) { };
-    while (!dealToResourceSpace('resource4') && !gameOVER) { };
-    while (!dealToResourceSpace('resource5') && !gameOVER) { };
-    while (!dealToResourceSpace('capital1') && !gameOVER) { };
-    while (!dealToResourceSpace('capital2') && !gameOVER) { };
-    while (!dealToResourceSpace('capital3') && !gameOVER) { };
-    while (!dealToResourceSpace('capital4') && !gameOVER) { };
-    while (!dealToResourceSpace('capital5') && !gameOVER) { };
+	for (var r=1 ;r<6; r++)
+		while (!dealToResourceSpace('resource' + r, r + 5) && !gameOVER) { };
+	/* Isn't this going to toss personalities into the Palace?
+	for (var c=1 ;c<6; c++)
+		while (!dealToResourceSpace('capital' + c, c) && !gameOVER) { };
+	 */
 }
 
 //
 // Attempt to deal a card into a resource space
 // returns true if successful
 //
-function dealToResourceSpace(spaceName) {
-
+function dealToResourceSpace(spaceName, delayUnits) {
     var returnValue = false;
     if (!isThereCardInSpace(spaceName)) {
         var c = getIndexOfTopCardOnDrawDeck();
         if (c != -1) {
             if (typeof (c) != 'undefined') {
                 if (deck[c].Face) {
-                    pushCardToPalace(c);
+                    pushCardToPalace(c,delayUnits);
                     returnValue = false;
                 } else {
-                    moveCardToSpace(c, spaceName);
+                    moveCardToSpace(c, spaceName,delayUnits);
                     returnValue = true;
                 }
             }
@@ -174,38 +169,32 @@ function dealToResourceSpace(spaceName) {
 		//We used the last card.
 		$("#drawDeckLocation").removeClass("full");
 	}
-	
     return returnValue;
 }
 
 //
 // Card was being dealt to resource but was a Face so is now being pushed to the Palace
 // Returns true if able to place the card
-function pushCardToPalace(indexOfCard) {
+function pushCardToPalace(indexOfCard, delayUnits) {
     var returnValue = false;
     var freeSpace = '';
 
     if (!isThereCardInSpace('palace1')) {
         freeSpace = 'palace1';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace2')) {
+    } else if (!isThereCardInSpace('palace2')) {
         freeSpace = 'palace2';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace3')) {
+    } else if (!isThereCardInSpace('palace3')) {
         freeSpace = 'palace3';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace4')) {
+    } else if (!isThereCardInSpace('palace4')) {
         freeSpace = 'palace4';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace5')) {
+    } else if (!isThereCardInSpace('palace5')) {
         freeSpace = 'palace5';
     }
 
     if (freeSpace != '') {
-        moveCardToSpace(indexOfCard, freeSpace);
+        moveCardToSpace(indexOfCard, freeSpace, delayUnits);
         returnValue = true;
-    }
-    else {
+    } else {
         // no palace spaces available the game is over
         gameIsOver("palace");
     }
@@ -217,21 +206,36 @@ function pushCardToPalace(indexOfCard) {
 // Deal cards from the draw pile into the Capital Spaces
 //
 function dealToTheCapital() {
-    if (!isThereCardInSpace('capital1')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital1'); }
-    if (!isThereCardInSpace('capital2')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital2'); }
-    if (!isThereCardInSpace('capital3')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital3'); }
-    if (!isThereCardInSpace('capital4')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital4'); }
-    if (!isThereCardInSpace('capital5')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital5'); }
+	for (var c=1; c<=5; c++) {
+		if (!isThereCardInSpace('capital' + c)) {
+			var d = getIndexOfTopCardOnDrawDeck();
+			if (d != -1) {
+				moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital' + c, c);
+			} else {
+				// no cards to deal
+			}
+		}
+	}
+	if (!isThereCardInSpace('drawDeckLocation')) {
+		//We used the last card.
+		$("#drawDeckLocation").removeClass("full");
+	}
 }
 
 //
 // move specified card to a new location
 //
-function moveCardToSpace(indexOfCard, spaceID) {
+function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
     // find target details
     var targetOffset = $('#' + spaceID).offset();
-	if (spaceID != "drawDeckLocation") $(deck[indexOfCard].selector).show();
-    $(deck[indexOfCard].selector).animate({left:targetOffset.left, top:targetOffset.top});
+	if (typeof delayUnits == 'undefined') delayUnits = 1;
+	var delayFactor = 300;
+	var delay = delayUnits * delayFactor;
+	if (spaceID != "drawDeckLocation") {
+		$(deck[indexOfCard].selector).show();
+	}
+    $(deck[indexOfCard].selector).delay(delay).animate({left:targetOffset.left, top:targetOffset.top});
+	console.log(deck[indexOfCard].Name + " to " + spaceID + " in " + delay);
     // reset cards location
     deck[indexOfCard].Location = spaceID;
 }
@@ -296,7 +300,7 @@ function cardClick(theImageID) {
     } else {
         // select card
 
-        // if this card is on the palace line, deselect all other palace cards
+        // if this card is on the palace or capital line, deselect all other palace and capital cards
         if (deck[cardIndex].Location.substring(0, 3) == 'pal' || deck[cardIndex].Location.substring(0, 3) == 'cap') {
             deselectAllCardsOnRow('palace');
             deselectAllCardsOnRow('capital');
@@ -355,7 +359,8 @@ function cardClick(theImageID) {
                     discardCard(targetCardIndex);
                 }
 
-                // Deal to resource line.
+                // Deal to capital and resource lines.
+                dealToTheCapital();
                 dealToTheResources();
 
                 // if there are no cards in the resource line, the game is over

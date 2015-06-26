@@ -7,12 +7,12 @@ Creative Commons Attribution NonCommercial ShareAlike 3.0 License.
 
 body {
     background-image:url('../Assets/skulls-orange.png');
-    font-family: 'Fortune Letters', fantasy;
+    font-family: 'Fortune Letters', Unkempt, Futura, Geneva, sans-serif;
     color: #740;
 }
 
 p {
-    font-family: 'Gill Sans', sans-serif;
+    font-family: 'Segoe UI', 'Century Gothic', 'Lucida Grande', Tahoma, 'Gill Sans', sans-serif;
     text-align:justify;
 }
 
@@ -24,6 +24,7 @@ p.callout {
 #gamewrapper {
     padding:15px 5px 5px 5px;
     white-space:nowrap;
+    min-height:500px;
 }
 
 #playarea {
@@ -33,7 +34,7 @@ p.callout {
 
 #deckcolumn {
     margin:2px;
-    min-width:150px;
+    min-width:160px;
     width:20%;
     height:500px; 
     display:inline-block;
@@ -184,14 +185,14 @@ p.callout {
     left:0;
     width:auto;
     height:auto;
-    border: 3px solid #740;
+    border: 3px solid rgba(119,68,0,0.90);
     border-radius: 12px;
-    background-color: rgba(175,97,47,0.95);
+    background-color: rgba(175,97,47,0.90);
     color:white;
     font-weight:normal;
     font-size:12pt;
     margin: 5%;
-    padding: 10px;     
+    padding: 10px 20px;     
     z-index:50;
 }
 
