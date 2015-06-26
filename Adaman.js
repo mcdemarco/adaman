@@ -119,7 +119,7 @@ function moveDeckBackToDrawDeck() {
     for (var i = 0; i < deck.length; i++) {
         deck[i].Selected = false;
         $(deck[i].selector).removeClass('cardselected').addClass('card').hide();
-        moveCardToSpace(i, 'drawDeckLocation', 0);
+        moveCardToSpace(i, 'drawDeckLocation', 0.1);
     }
 	$("#drawDeckLocation").addClass("full");
 }
@@ -129,9 +129,11 @@ function moveDeckBackToDrawDeck() {
 // deal cards to the resources line
 // Note. any face cards go to the Palace
 //
-function dealToTheResources() {
+function dealToTheResources(delayUnits) {
 	for (var r=1 ;r<6; r++)
-		while (!dealToResourceSpace('resource' + r, r + 5) && !gameOVER) { };
+		while (!dealToResourceSpace('resource' + r, (delayUnits ? delayUnits : r + 5)) && !gameOVER) { };
+
+	//	
 	/* Isn't this going to toss personalities into the Palace?
 	for (var c=1 ;c<6; c++)
 		while (!dealToResourceSpace('capital' + c, c) && !gameOVER) { };
@@ -181,14 +183,19 @@ function pushCardToPalace(indexOfCard, delayUnits) {
 
     if (!isThereCardInSpace('palace1')) {
         freeSpace = 'palace1';
+		delayUnits = delayUnits - 0.83;
     } else if (!isThereCardInSpace('palace2')) {
         freeSpace = 'palace2';
+		delayUnits = delayUnits - 0.66;
     } else if (!isThereCardInSpace('palace3')) {
         freeSpace = 'palace3';
+		delayUnits = delayUnits - 0.5;
     } else if (!isThereCardInSpace('palace4')) {
         freeSpace = 'palace4';
+		delayUnits = delayUnits - 0.33;
     } else if (!isThereCardInSpace('palace5')) {
         freeSpace = 'palace5';
+		delayUnits = delayUnits - 0.17;
     }
 
     if (freeSpace != '') {
@@ -205,12 +212,12 @@ function pushCardToPalace(indexOfCard, delayUnits) {
 //
 // Deal cards from the draw pile into the Capital Spaces
 //
-function dealToTheCapital() {
+function dealToTheCapital(discardCount) {
 	for (var c=1; c<=5; c++) {
 		if (!isThereCardInSpace('capital' + c)) {
 			var d = getIndexOfTopCardOnDrawDeck();
 			if (d != -1) {
-				moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital' + c, c);
+				moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital' + c, (discardCount ? discardCount : c));
 			} else {
 				// no cards to deal
 			}
@@ -232,9 +239,10 @@ function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
 	var delayFactor = 300;
 	var delay = delayUnits * delayFactor;
 	if (spaceID != "drawDeckLocation") {
-		$(deck[indexOfCard].selector).show();
+		delay = delay * 0.5;
+		$(deck[indexOfCard].selector).delay(delay).show();
 	}
-    $(deck[indexOfCard].selector).delay(delay).animate({left:targetOffset.left, top:targetOffset.top});
+    $(deck[indexOfCard].selector).delay(delay).animate({left:targetOffset.left, top:targetOffset.top},delayFactor);
 	console.log(deck[indexOfCard].Name + " to " + spaceID + " in " + delay);
     // reset cards location
     deck[indexOfCard].Location = spaceID;
@@ -314,15 +322,15 @@ function cardClick(theImageID) {
             if (canTargetBeDefeatedBySelectedResources()) {
                 // Get the index of target Card
                 var targetCardIndex = getTargetCardIndex();
-                //alert('target card index ' + targetCardIndex);
                 
                 // Remove resource cards that match target card suits.
+				var discardCount = 0;
                 for (var i = 0; i < deck.length; i++) {
                     if (deck[i].Selected == true) {
                         if (deck[i].Location.substring(0, 3) == 'res') {
                             if (decktetDoCardsMatchOnAnySuit(targetCardIndex, i)) {
-                                //score += deck[i].Value;
-                                discardCard(i);
+								discardCount++;
+                                discardCard(i,discardCount);
                             }
                         }
                     }
@@ -344,24 +352,25 @@ function cardClick(theImageID) {
                 if (deck[targetCardIndex].Face == false) {
                     //alert('moving '+ deck[targetCardIndex].Name + ' to a resource space');
                     if (!isThereCardInSpace('resource1')) {
-                        moveCardToSpace(targetCardIndex, 'resource1');
+                        moveCardToSpace(targetCardIndex, 'resource1',discardCount);
                     } else if (!isThereCardInSpace('resource2')) {
-                        moveCardToSpace(targetCardIndex, 'resource2');
+                        moveCardToSpace(targetCardIndex, 'resource2',discardCount);
                     } else if (!isThereCardInSpace('resource3')) {
-                        moveCardToSpace(targetCardIndex, 'resource3');
+                        moveCardToSpace(targetCardIndex, 'resource3',discardCount);
                     } else if (!isThereCardInSpace('resource4')) {
-                        moveCardToSpace(targetCardIndex, 'resource4');
+                        moveCardToSpace(targetCardIndex, 'resource4',discardCount);
                     } else if (!isThereCardInSpace('resource5')) {
-                        moveCardToSpace(targetCardIndex, 'resource5');
+                        moveCardToSpace(targetCardIndex, 'resource5',discardCount);
                     }
                 } else {
                     // the card is a face card, so simply discard it
-                    discardCard(targetCardIndex);
+                    discardCard(targetCardIndex,0);
                 }
 
                 // Deal to capital and resource lines.
-                dealToTheCapital();
-                dealToTheResources();
+                dealToTheCapital(discardCount);
+				// +1 for any Capital cards, +1 for any Palace deals.
+                dealToTheResources(discardCount + 2);
 
                 // if there are no cards in the resource line, the game is over
                 if (getResourceCount() == 0) {
@@ -414,12 +423,12 @@ function getResourceScore() {
 //
 // Discard a selected card
 //
-function discardCard(cardIndex) {
+function discardCard(cardIndex,delayUnits) {
 	discardCount++;
     deck[cardIndex].Selected = false; // deselect it card
     $(deck[cardIndex].selector).removeClass('cardselected').addClass('card'); // remove selected class
-	$(deck[cardIndex].selector).css("z-index",discardCount);
-    moveCardToSpace(cardIndex, 'discardDeckLocation');
+	$(deck[cardIndex].selector).css("z-index",delayUnits);
+    moveCardToSpace(cardIndex, 'discardDeckLocation',1);
 	if (deck[cardIndex].Face)
 		countPersonality();
 }
