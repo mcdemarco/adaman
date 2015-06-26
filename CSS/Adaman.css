@@ -37,6 +37,7 @@ p.callout {
     min-height: 500px; /*? 833px;*/
 }
 
+/* set viewport to match */
 #playarea {
     min-width:955px;
     margin:2px;

@@ -9,6 +9,7 @@ var gameOVER = false;       // overall flag to indicate the game is over
 var score = 0;
 var personalityCount = 0;
 var discardCount = 0;
+var speed = 300;
 
 //
 // runs when the page first loads
@@ -16,7 +17,8 @@ var discardCount = 0;
 function initialise_GamePage() {
     // set up the click events for the story popup
     $('#showStoryButton').click(function () {
-        $('#whatsthestory').show();
+        $('.panel').hide();
+        $('#whatsthestory').fadeIn(speed);
     });
     $('.close.button').click(function () {
         $('.panel').hide();
@@ -26,7 +28,8 @@ function initialise_GamePage() {
         moveDeckBackToDrawDeck();
     });
     $('#creditsButton').click(function () {
-        $('#gameCredits').show();
+        $('.panel').hide();
+        $('#gameCredits').fadeIn(speed);
     });
 
     // event for the startbuttonclick
@@ -111,7 +114,8 @@ function startButtonClick() {
     dealToTheResources();
     var canContinue = isThereAMove();
     if (!canContinue) {
-        gameIsOver();
+		//Delay is for 5 capitol cards + 5 palace cards + up to 5 resource cards.
+        gameIsOver(15);
     }
 }
 
@@ -203,7 +207,7 @@ function pushCardToPalace(indexOfCard, delayUnits) {
         returnValue = true;
     } else {
         // no palace spaces available the game is over
-        gameIsOver("palace");
+        gameIsOver("palace",delayUnits);
     }
 
     return returnValue;
@@ -236,13 +240,12 @@ function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
     // find target details
     var targetOffset = $('#' + spaceID).offset();
 	if (typeof delayUnits == 'undefined') delayUnits = 1;
-	var delayFactor = 300;
-	var delay = delayUnits * delayFactor;
+	var delay = delayUnits * speed;
 	if (spaceID != "drawDeckLocation") {
 		delay = delay * 0.5;
-		$(deck[indexOfCard].selector).delay(delay).show();
+		$(deck[indexOfCard].selector).delay(delay).fadeIn(speed);
 	}
-    $(deck[indexOfCard].selector).delay(delay).animate({left:targetOffset.left, top:targetOffset.top},delayFactor);
+    $(deck[indexOfCard].selector).delay(delay).animate({left:targetOffset.left, top:targetOffset.top},speed);
 	console.log(deck[indexOfCard].Name + " to " + spaceID + " in " + delay);
     // reset cards location
     deck[indexOfCard].Location = spaceID;
@@ -375,7 +378,7 @@ function cardClick(theImageID) {
                 // if there are no cards in the resource line, the game is over
                 if (getResourceCount() == 0) {
 					//This would fall through to (and hopefully fail) the move check, but stop anyway.
-					gameIsOver();
+					gameIsOver('noMoves',discardCount + 2);
                 }
             }
         }
@@ -430,16 +433,16 @@ function discardCard(cardIndex,delayUnits) {
 	$(deck[cardIndex].selector).css("z-index",delayUnits);
     moveCardToSpace(cardIndex, 'discardDeckLocation',1);
 	if (deck[cardIndex].Face)
-		countPersonality();
+		countPersonality(delayUnits);
 }
 
-function countPersonality() {
+function countPersonality(delayUnits) {
 	personalityCount++;
 	$("#personalityCount").html(personalityCount);
 	//The running score only changes for personalities, so though it was incremented elsewhere, update here.
 	$("#runningScore").html(score);
 	if (personalityCount == 11) {
-		gameIsOver("victory");
+		gameIsOver("victory",delayUnits);
 	}
 }
 
@@ -560,7 +563,7 @@ function pleaseWaitOff() { $('#pleaseWait').hide();}
 // The Game is over as there are no available moves
 //
 
-function gameIsOver(endCondition) {
+function gameIsOver(endCondition,delayUnits) {
     gameOVER = true;
 	endCondition = typeof endCondition !== 'undefined' ? endCondition : "noMoves";
 	if (endCondition == "victory") {
@@ -579,6 +582,6 @@ function gameIsOver(endCondition) {
 		default:
 			$("#endCondition").html("There are no more possible moves.");
 	}
-    $('#gameOver').show();
+	delayUnits = typeof delayUnits !== 'undefined' ? delayUnits : 0;
+    $('#gameOver').delay(delayUnits * speed).show(speed);
 }
-
