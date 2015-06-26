@@ -9,6 +9,7 @@ var gameOVER = false;       // overall flag to indicate the game is over
 var score = 0;
 var personalityCount = 0;
 var discardCount = 0;
+var speed = 300;
 
 //
 // runs when the page first loads
@@ -16,7 +17,8 @@ var discardCount = 0;
 function initialise_GamePage() {
     // set up the click events for the story popup
     $('#showStoryButton').click(function () {
-        $('#whatsthestory').show();
+        $('.panel').hide();
+        $('#whatsthestory').fadeIn(speed);
     });
     $('.close.button').click(function () {
         $('.panel').hide();
@@ -26,7 +28,8 @@ function initialise_GamePage() {
         moveDeckBackToDrawDeck();
     });
     $('#creditsButton').click(function () {
-        $('#gameCredits').show();
+        $('.panel').hide();
+        $('#gameCredits').fadeIn(speed);
     });
 
     // event for the startbuttonclick
@@ -111,7 +114,8 @@ function startButtonClick() {
     dealToTheResources();
     var canContinue = isThereAMove();
     if (!canContinue) {
-        gameIsOver();
+		//Delay is for 5 capitol cards + 5 palace cards + up to 5 resource cards.
+        gameIsOver(15);
     }
 }
 
@@ -119,7 +123,7 @@ function moveDeckBackToDrawDeck() {
     for (var i = 0; i < deck.length; i++) {
         deck[i].Selected = false;
         $(deck[i].selector).removeClass('cardselected').addClass('card').hide();
-        moveCardToSpace(i, 'drawDeckLocation');
+        moveCardToSpace(i, 'drawDeckLocation', 0.1);
     }
 	$("#drawDeckLocation").addClass("full");
 }
@@ -129,35 +133,32 @@ function moveDeckBackToDrawDeck() {
 // deal cards to the resources line
 // Note. any face cards go to the Palace
 //
-function dealToTheResources() {
-    while (!dealToResourceSpace('resource1') && !gameOVER) { };
-    while (!dealToResourceSpace('resource2') && !gameOVER) { };
-    while (!dealToResourceSpace('resource3') && !gameOVER) { };
-    while (!dealToResourceSpace('resource4') && !gameOVER) { };
-    while (!dealToResourceSpace('resource5') && !gameOVER) { };
-    while (!dealToResourceSpace('capital1') && !gameOVER) { };
-    while (!dealToResourceSpace('capital2') && !gameOVER) { };
-    while (!dealToResourceSpace('capital3') && !gameOVER) { };
-    while (!dealToResourceSpace('capital4') && !gameOVER) { };
-    while (!dealToResourceSpace('capital5') && !gameOVER) { };
+function dealToTheResources(delayUnits) {
+	for (var r=1 ;r<6; r++)
+		while (!dealToResourceSpace('resource' + r, (delayUnits ? delayUnits : r + 5)) && !gameOVER) { };
+
+	//	
+	/* Isn't this going to toss personalities into the Palace?
+	for (var c=1 ;c<6; c++)
+		while (!dealToResourceSpace('capital' + c, c) && !gameOVER) { };
+	 */
 }
 
 //
 // Attempt to deal a card into a resource space
 // returns true if successful
 //
-function dealToResourceSpace(spaceName) {
-
+function dealToResourceSpace(spaceName, delayUnits) {
     var returnValue = false;
     if (!isThereCardInSpace(spaceName)) {
         var c = getIndexOfTopCardOnDrawDeck();
         if (c != -1) {
             if (typeof (c) != 'undefined') {
                 if (deck[c].Face) {
-                    pushCardToPalace(c);
+                    pushCardToPalace(c,delayUnits);
                     returnValue = false;
                 } else {
-                    moveCardToSpace(c, spaceName);
+                    moveCardToSpace(c, spaceName,delayUnits);
                     returnValue = true;
                 }
             }
@@ -174,40 +175,39 @@ function dealToResourceSpace(spaceName) {
 		//We used the last card.
 		$("#drawDeckLocation").removeClass("full");
 	}
-	
     return returnValue;
 }
 
 //
 // Card was being dealt to resource but was a Face so is now being pushed to the Palace
 // Returns true if able to place the card
-function pushCardToPalace(indexOfCard) {
+function pushCardToPalace(indexOfCard, delayUnits) {
     var returnValue = false;
     var freeSpace = '';
 
     if (!isThereCardInSpace('palace1')) {
         freeSpace = 'palace1';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace2')) {
+		delayUnits = delayUnits - 0.83;
+    } else if (!isThereCardInSpace('palace2')) {
         freeSpace = 'palace2';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace3')) {
+		delayUnits = delayUnits - 0.66;
+    } else if (!isThereCardInSpace('palace3')) {
         freeSpace = 'palace3';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace4')) {
+		delayUnits = delayUnits - 0.5;
+    } else if (!isThereCardInSpace('palace4')) {
         freeSpace = 'palace4';
-    }
-    if (freeSpace == '' && !isThereCardInSpace('palace5')) {
+		delayUnits = delayUnits - 0.33;
+    } else if (!isThereCardInSpace('palace5')) {
         freeSpace = 'palace5';
+		delayUnits = delayUnits - 0.17;
     }
 
     if (freeSpace != '') {
-        moveCardToSpace(indexOfCard, freeSpace);
+        moveCardToSpace(indexOfCard, freeSpace, delayUnits);
         returnValue = true;
-    }
-    else {
+    } else {
         // no palace spaces available the game is over
-        gameIsOver("palace");
+        gameIsOver("palace",delayUnits);
     }
 
     return returnValue;
@@ -216,22 +216,37 @@ function pushCardToPalace(indexOfCard) {
 //
 // Deal cards from the draw pile into the Capital Spaces
 //
-function dealToTheCapital() {
-    if (!isThereCardInSpace('capital1')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital1'); }
-    if (!isThereCardInSpace('capital2')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital2'); }
-    if (!isThereCardInSpace('capital3')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital3'); }
-    if (!isThereCardInSpace('capital4')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital4'); }
-    if (!isThereCardInSpace('capital5')) { moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital5'); }
+function dealToTheCapital(discardCount) {
+	for (var c=1; c<=5; c++) {
+		if (!isThereCardInSpace('capital' + c)) {
+			var d = getIndexOfTopCardOnDrawDeck();
+			if (d != -1) {
+				moveCardToSpace(getIndexOfTopCardOnDrawDeck(), 'capital' + c, (discardCount ? discardCount : c));
+			} else {
+				// no cards to deal
+			}
+		}
+	}
+	if (!isThereCardInSpace('drawDeckLocation')) {
+		//We used the last card.
+		$("#drawDeckLocation").removeClass("full");
+	}
 }
 
 //
 // move specified card to a new location
 //
-function moveCardToSpace(indexOfCard, spaceID) {
+function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
     // find target details
     var targetOffset = $('#' + spaceID).offset();
-	if (spaceID != "drawDeckLocation") $(deck[indexOfCard].selector).show();
-    $(deck[indexOfCard].selector).animate({left:targetOffset.left, top:targetOffset.top});
+	if (typeof delayUnits == 'undefined') delayUnits = 1;
+	var delay = delayUnits * speed;
+	if (spaceID != "drawDeckLocation") {
+		delay = delay * 0.5;
+		$(deck[indexOfCard].selector).delay(delay).fadeIn(speed);
+	}
+    $(deck[indexOfCard].selector).delay(delay).animate({left:targetOffset.left, top:targetOffset.top},speed);
+	console.log(deck[indexOfCard].Name + " to " + spaceID + " in " + delay);
     // reset cards location
     deck[indexOfCard].Location = spaceID;
 }
@@ -296,7 +311,7 @@ function cardClick(theImageID) {
     } else {
         // select card
 
-        // if this card is on the palace line, deselect all other palace cards
+        // if this card is on the palace or capital line, deselect all other palace and capital cards
         if (deck[cardIndex].Location.substring(0, 3) == 'pal' || deck[cardIndex].Location.substring(0, 3) == 'cap') {
             deselectAllCardsOnRow('palace');
             deselectAllCardsOnRow('capital');
@@ -310,15 +325,15 @@ function cardClick(theImageID) {
             if (canTargetBeDefeatedBySelectedResources()) {
                 // Get the index of target Card
                 var targetCardIndex = getTargetCardIndex();
-                //alert('target card index ' + targetCardIndex);
                 
                 // Remove resource cards that match target card suits.
+				var discardCount = 0;
                 for (var i = 0; i < deck.length; i++) {
                     if (deck[i].Selected == true) {
                         if (deck[i].Location.substring(0, 3) == 'res') {
                             if (decktetDoCardsMatchOnAnySuit(targetCardIndex, i)) {
-                                //score += deck[i].Value;
-                                discardCard(i);
+								discardCount++;
+                                discardCard(i,discardCount);
                             }
                         }
                     }
@@ -340,28 +355,30 @@ function cardClick(theImageID) {
                 if (deck[targetCardIndex].Face == false) {
                     //alert('moving '+ deck[targetCardIndex].Name + ' to a resource space');
                     if (!isThereCardInSpace('resource1')) {
-                        moveCardToSpace(targetCardIndex, 'resource1');
+                        moveCardToSpace(targetCardIndex, 'resource1',discardCount);
                     } else if (!isThereCardInSpace('resource2')) {
-                        moveCardToSpace(targetCardIndex, 'resource2');
+                        moveCardToSpace(targetCardIndex, 'resource2',discardCount);
                     } else if (!isThereCardInSpace('resource3')) {
-                        moveCardToSpace(targetCardIndex, 'resource3');
+                        moveCardToSpace(targetCardIndex, 'resource3',discardCount);
                     } else if (!isThereCardInSpace('resource4')) {
-                        moveCardToSpace(targetCardIndex, 'resource4');
+                        moveCardToSpace(targetCardIndex, 'resource4',discardCount);
                     } else if (!isThereCardInSpace('resource5')) {
-                        moveCardToSpace(targetCardIndex, 'resource5');
+                        moveCardToSpace(targetCardIndex, 'resource5',discardCount);
                     }
                 } else {
                     // the card is a face card, so simply discard it
-                    discardCard(targetCardIndex);
+                    discardCard(targetCardIndex,0);
                 }
 
-                // Deal to resource line.
-                dealToTheResources();
+                // Deal to capital and resource lines.
+                dealToTheCapital(discardCount);
+				// +1 for any Capital cards, +1 for any Palace deals.
+                dealToTheResources(discardCount + 2);
 
                 // if there are no cards in the resource line, the game is over
                 if (getResourceCount() == 0) {
 					//This would fall through to (and hopefully fail) the move check, but stop anyway.
-					gameIsOver();
+					gameIsOver('noMoves',discardCount + 2);
                 }
             }
         }
@@ -409,23 +426,23 @@ function getResourceScore() {
 //
 // Discard a selected card
 //
-function discardCard(cardIndex) {
+function discardCard(cardIndex,delayUnits) {
 	discardCount++;
     deck[cardIndex].Selected = false; // deselect it card
     $(deck[cardIndex].selector).removeClass('cardselected').addClass('card'); // remove selected class
-	$(deck[cardIndex].selector).css("z-index",discardCount);
-    moveCardToSpace(cardIndex, 'discardDeckLocation');
+	$(deck[cardIndex].selector).css("z-index",delayUnits);
+    moveCardToSpace(cardIndex, 'discardDeckLocation',1);
 	if (deck[cardIndex].Face)
-		countPersonality();
+		countPersonality(delayUnits);
 }
 
-function countPersonality() {
+function countPersonality(delayUnits) {
 	personalityCount++;
 	$("#personalityCount").html(personalityCount);
 	//The running score only changes for personalities, so though it was incremented elsewhere, update here.
 	$("#runningScore").html(score);
 	if (personalityCount == 11) {
-		gameIsOver("victory");
+		gameIsOver("victory",delayUnits);
 	}
 }
 
@@ -546,7 +563,7 @@ function pleaseWaitOff() { $('#pleaseWait').hide();}
 // The Game is over as there are no available moves
 //
 
-function gameIsOver(endCondition) {
+function gameIsOver(endCondition,delayUnits) {
     gameOVER = true;
 	endCondition = typeof endCondition !== 'undefined' ? endCondition : "noMoves";
 	if (endCondition == "victory") {
@@ -565,6 +582,6 @@ function gameIsOver(endCondition) {
 		default:
 			$("#endCondition").html("There are no more possible moves.");
 	}
-    $('#gameOver').show();
+	delayUnits = typeof delayUnits !== 'undefined' ? delayUnits : 0;
+    $('#gameOver').delay(delayUnits * speed).show(speed);
 }
-
