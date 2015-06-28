@@ -110,6 +110,7 @@ function startButtonClick() {
 
     moveDeckBackToDrawDeck();
     decktetShuffle(deck);
+	stackDeck();
     dealToTheCapital();
     dealToTheResources();
     var canContinue = isThereAMove();
@@ -242,7 +243,7 @@ function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
 	if (typeof delayUnits == 'undefined') delayUnits = 1;
 	var delay = delayUnits * speed;
 	if (spaceID != "drawDeckLocation") {
-		$(deck[indexOfCard].selector).delay(delay).css("z-index",50-delayUnits).fadeIn(speed);
+		$(deck[indexOfCard].selector).fadeIn(speed);
 	}
     $(deck[indexOfCard].selector).delay(delay).transition({left:targetOffset.left, top:targetOffset.top},speed,"snap");
     // reset cards location
@@ -285,7 +286,7 @@ function createOnScreenCards() {
     pleaseWaitOn();
     var p = $('#drawDeckLocation').offset();
     for (var i = deck.length - 1; i >= 0; i--) {
-        createOnScreenCard(deck[i]);
+        createOnScreenCard(deck[i],i);
         $(deck[i].selector).offset({ top: p.top, left: p.left });
         $(deck[i].selector).click(function () { cardClick(this.id); });
     }
@@ -325,7 +326,7 @@ function cardClick(theImageID) {
                 var targetCardIndex = getTargetCardIndex();
                 
                 // Remove resource cards that match target card suits.
-				var discardCount = 0;
+				var discardCount = 1;
                 for (var i = 0; i < deck.length; i++) {
                     if (deck[i].Selected == true) {
                         if (deck[i].Location.substring(0, 3) == 'res') {
@@ -344,14 +345,8 @@ function cardClick(theImageID) {
                     score += deck[targetCardIndex].Value;
                 }
 
-                // deselect target card.
-                deck[targetCardIndex].Selected = false;
-                $(deck[targetCardIndex].selector).removeClass('cardselected');
-    
-
                 // If target card is not a face card is should be moved to the resource line.
                 if (deck[targetCardIndex].Face == false) {
-                    //alert('moving '+ deck[targetCardIndex].Name + ' to a resource space');
                     if (!isThereCardInSpace('resource1')) {
                         moveCardToSpace(targetCardIndex, 'resource1',discardCount);
                     } else if (!isThereCardInSpace('resource2')) {
@@ -365,8 +360,12 @@ function cardClick(theImageID) {
                     }
                 } else {
                     // the card is a face card, so simply discard it
-                    discardCard(targetCardIndex,0);
+                    discardCard(targetCardIndex,1);
                 }
+
+				// deselect target card.
+                deck[targetCardIndex].Selected = false;
+                $(deck[targetCardIndex].selector).delay(discardCount).removeClass('cardselected');
 
                 // Deal to capital and resource lines.
                 dealToTheCapital(discardCount);
@@ -382,7 +381,7 @@ function cardClick(theImageID) {
         }
 
         if (!isThereAMove()) {
-            gameIsOver();
+            gameIsOver('noMoves',discardCount + 2);
         }
     }
 }
@@ -546,10 +545,20 @@ function adamanCreateDeck() {
 //
 // create an on-screen card element
 //
-function createOnScreenCard(card) {
+function createOnScreenCard(card,index) {
     var imageLit = '<img id="' + card.divID + '" class="card'  + (card.Face ? ' face' : '') + '" src="CardImages/' + card.Image + '" title="' + card.Name + '" />';
     $(imageLit).appendTo('#gamewrapper').hide();
 }
+
+//
+// stack the cards
+//
+function stackDeck() {
+    for (var i = 0; i < deck.length; i++) {
+		$(deck[i].selector).css("z-index",deck.length-i);
+	}
+}
+
 
 //
 // "Please wait" functions
