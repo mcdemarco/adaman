@@ -37,7 +37,6 @@ p.callout {
     min-height: 500px; /*? 833px;*/
 }
 
-/* set viewport to match */
 #playarea {
     min-width:955px;
     margin:2px;
@@ -154,6 +153,12 @@ p.callout {
     border-radius:6px;
 }
 
+.embiggen1 .card {
+    background-size:248px 348px;
+    border-radius:12px 0 0 0;
+}
+
+
 .cardspace, #deckcolumn .cardspace {
     border:thin solid #740;
     margin:4px;
@@ -193,11 +198,15 @@ p.callout {
 
 .card {
     position:absolute;
+    background-size:124px 174px;
 }
 
 .face {
-    border: 1px solid red;
-    box-shadow: 3px 3px 1px 3px #AF612F;
+    box-shadow: 6px 8px 4px #740;
+}
+
+.embiggen1 .card.face {
+    box-shadow: -6px -8px 4px #740;
 }
 
 .cardselected {
@@ -215,16 +224,13 @@ p.callout {
     top:0;
     left:0;
     width:auto;
-    height:auto;
-    border: 3px solid rgba(119,68,0,0.90);
-    border-radius: 12px;
+    height:100%;
     background-color: rgba(175,97,47,0.90);
     color:white;
     font-weight:normal;
     font-size:12pt;
-    margin: 5%;
-    padding: 10px 20px;     
-    z-index:50;
+    padding: 5%;
+    z-index:51;
 }
 
 #gameovernomoves {

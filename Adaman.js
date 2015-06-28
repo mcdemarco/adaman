@@ -31,6 +31,10 @@ function initialise_GamePage() {
         $('.panel').hide();
         $('#gameCredits').fadeIn(speed);
     });
+	
+    $('#plusButton').click(function () {
+        $('body').toggleClass('embiggen1');
+    });
 
     // event for the startbuttonclick
     $('#startButton').click(function () {
@@ -546,7 +550,7 @@ function adamanCreateDeck() {
 // create an on-screen card element
 //
 function createOnScreenCard(card,index) {
-    var imageLit = '<img id="' + card.divID + '" class="card'  + (card.Face ? ' face' : '') + '" src="CardImages/' + card.Image + '" title="' + card.Name + '" />';
+    var imageLit = '<div id="' + card.divID + '" class="card'  + (card.Face ? ' face' : '') + '" style="background-image:url(CardImages/' + card.Image + ');" title="' + card.Name + '"></div>';
     $(imageLit).appendTo('#gamewrapper').hide();
 }
 
