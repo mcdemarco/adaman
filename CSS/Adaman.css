@@ -142,13 +142,13 @@ p.callout {
     background-size:100px 150px;
 }
 
-.cardspace, #deckcolumn .cardspace, .card, .cardselected {
+.cardspace, #deckcolumn .cardspace, .card {
     width:124px;
     height:174px;
     border-radius:6px;
 }
 
-.embiggen .cardspace, .embiggen #deckcolumn .cardspace, .embiggen .card, .embiggen .cardselected {
+.embiggen .cardspace, .embiggen #deckcolumn .cardspace, .embiggen .card {
     width:100px;
     height:150px;
     border-radius:6px;
@@ -191,30 +191,21 @@ p.callout {
     color:#740;
 }
 
-.card
-{
+.card {
     position:absolute;
 }
 
-.face
-{
+.face {
     border: 1px solid red;
-    opacity: 0.9;
     box-shadow: 3px 3px 1px 3px #AF612F;
 }
 
-.cardselected
-{
+.cardselected {
     opacity: 0.6;
-    position:absolute;
 }
 
 .hidden {
     display:none;
-}
-
-.floatthisleft {
-    float:left;
 }
 
 .panel {

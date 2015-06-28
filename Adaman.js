@@ -120,12 +120,12 @@ function startButtonClick() {
 }
 
 function moveDeckBackToDrawDeck() {
+	$("#drawDeckLocation").addClass("full");
     for (var i = 0; i < deck.length; i++) {
         deck[i].Selected = false;
-        $(deck[i].selector).removeClass('cardselected').addClass('card').hide();
         moveCardToSpace(i, 'drawDeckLocation', 0.1);
+        $(deck[i].selector).removeClass('cardselected').hide();
     }
-	$("#drawDeckLocation").addClass("full");
 }
 
 
@@ -135,7 +135,7 @@ function moveDeckBackToDrawDeck() {
 //
 function dealToTheResources(delayUnits) {
 	for (var r=1 ;r<6; r++)
-		while (!dealToResourceSpace('resource' + r, (delayUnits ? delayUnits : r + 5)) && !gameOVER) { };
+		while (!dealToResourceSpace('resource' + r, (typeof delayUnits =='undefined' ? r + 5 : delayUnits + r/5)) && !gameOVER) { };
 
 	//	
 	/* Isn't this going to toss personalities into the Palace?
@@ -242,11 +242,9 @@ function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
 	if (typeof delayUnits == 'undefined') delayUnits = 1;
 	var delay = delayUnits * speed;
 	if (spaceID != "drawDeckLocation") {
-		delay = delay * 0.5;
-		$(deck[indexOfCard].selector).delay(delay).fadeIn(speed);
+		$(deck[indexOfCard].selector).delay(delay).css("z-index",50-delayUnits).fadeIn(speed);
 	}
-    $(deck[indexOfCard].selector).delay(delay).animate({left:targetOffset.left, top:targetOffset.top},speed);
-	console.log(deck[indexOfCard].Name + " to " + spaceID + " in " + delay);
+    $(deck[indexOfCard].selector).delay(delay).transition({left:targetOffset.left, top:targetOffset.top},speed,"snap");
     // reset cards location
     deck[indexOfCard].Location = spaceID;
 }
@@ -307,7 +305,7 @@ function cardClick(theImageID) {
     if (deck[cardIndex].Selected) {
         // deselect card
         deck[cardIndex].Selected = false;
-        $(deck[cardIndex].selector).removeClass('cardselected').addClass('card');
+        $(deck[cardIndex].selector).removeClass('cardselected');
     } else {
         // select card
 
@@ -319,7 +317,7 @@ function cardClick(theImageID) {
 
         // mark the card as selected.
         deck[cardIndex].Selected = true;
-        $(deck[cardIndex].selector).removeClass('card').addClass('cardselected');
+        $(deck[cardIndex].selector).addClass('cardselected');
 
         if (checkIfTargetAndResourceCardsAreSelected()) {
             if (canTargetBeDefeatedBySelectedResources()) {
@@ -348,7 +346,7 @@ function cardClick(theImageID) {
 
                 // deselect target card.
                 deck[targetCardIndex].Selected = false;
-                $(deck[targetCardIndex].selector).removeClass('cardselected').addClass('card');
+                $(deck[targetCardIndex].selector).removeClass('cardselected');
     
 
                 // If target card is not a face card is should be moved to the resource line.
@@ -429,7 +427,7 @@ function getResourceScore() {
 function discardCard(cardIndex,delayUnits) {
 	discardCount++;
     deck[cardIndex].Selected = false; // deselect it card
-    $(deck[cardIndex].selector).removeClass('cardselected').addClass('card'); // remove selected class
+    $(deck[cardIndex].selector).removeClass('cardselected');
 	$(deck[cardIndex].selector).css("z-index",delayUnits);
     moveCardToSpace(cardIndex, 'discardDeckLocation',1);
 	if (deck[cardIndex].Face)
@@ -508,7 +506,7 @@ function deselectAllCardsOnRow(rowName) {
         if (deck[i].Location.substring(0, rowName.length) == rowName) {
             if (deck[i].Selected == true) {
                 deck[i].Selected = false;
-                $(deck[i].selector).removeClass('cardselected').addClass('card');
+                $(deck[i].selector).removeClass('cardselected');
             }
         }
     }
@@ -549,7 +547,7 @@ function adamanCreateDeck() {
 // create an on-screen card element
 //
 function createOnScreenCard(card) {
-    var imageLit = '<img id="' + card.divID + '" src="CardImages/' + card.Image + '" title="' + card.Name + '" class="card' + (card.Face ? ' face' : '') +  '"/>';
+    var imageLit = '<img id="' + card.divID + '" class="card'  + (card.Face ? ' face' : '') + '" src="CardImages/' + card.Image + '" title="' + card.Name + '" />';
     $(imageLit).appendTo('#gamewrapper').hide();
 }
 
