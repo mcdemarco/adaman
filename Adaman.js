@@ -34,6 +34,10 @@ function initialise_GamePage() {
 	
     $('#plusButton').click(function () {
         $('body').toggleClass('embiggen1');
+        if ($('#plusButton').html() == "+")
+			$('#plusButton').html("-");
+		else
+			$('#plusButton').html("+");
     });
 
     // event for the startbuttonclick
