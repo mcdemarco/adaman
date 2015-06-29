@@ -10,25 +10,55 @@ var score = 0;
 var personalityCount = 0;
 var personalityTotal;
 var discardCount = 0;
-var speed = 300;
-var difficulty;
-var emblacken;
+var defaultSettings = {speed: 300,
+					   magnification: false,
+					   blackmoons: true,
+					   difficulty: 'normal'};
+var speed;
 
 //
 // runs when the page first loads
 //
 function initialise_GamePage() {
-	// set up the click events for the story popup
+
+	//Settings.
+	// need speed first.
+	speed = getSetting('speed');
+	$('input#speed').val(speed);
+	
+	//speed monitor
+	$('input#speed').change(function() {
+		if (parseInt($("input#speed").val()) > -1)
+			speed = parseInt($("input#speed").val());
+		setSetting('speed',speed);
+	});
+
+	// need magnification to set up the button
+	// This is a little awkward but will be cleaned up later for a third option
+	if (getSetting('magnification') == true) {
+		$('body').addClass('embiggen1');
+		$('#plusButton').html("Normal");
+	}
+	$('#plusButton').click(function () {
+		$('body').toggleClass('embiggen1');
+		if ($('#plusButton').html() == "Enlarge") {
+			setSetting('magnification',true);
+			$('#plusButton').html("Normal");
+		} else {
+			setSetting('magnification',false);
+			$('#plusButton').html("Enlarge");
+		}
+	});
+
+	//Fill in the rest of the settings form
+	$("input[name=difficulty]").val([getSetting('difficulty')]);
+	$("input#emblacken").prop("checked",getSetting('blackmoons'));
+	
+	
+	// set up the click events for the panels
 	$('#showStoryButton').click(function () {
 		$('.panel').hide();
 		$('#whatsthestory').fadeIn(speed);
-	});
-	$('.close.button').click(function () {
-		$('.panel').hide();
-	});
-	$('#gameOverCloseButton').click(function () {
-		//semi clean up
-		moveDeckBackToDrawDeck();
 	});
 	$('#settingsButton').click(function () {
 		$('.panel').hide();
@@ -38,40 +68,33 @@ function initialise_GamePage() {
 		$('.panel').hide();
 		$('#gameCredits').fadeIn(speed);
 	});
-	
-	$('#plusButton').click(function () {
-		$('body').toggleClass('embiggen1');
-		if ($('#plusButton').html() == "Enlarge")
-			$('#plusButton').html("Normal");
-		else
-			$('#plusButton').html("Enlarge");
+	$('.close.button').click(function () {
+		$('.panel').hide();
 	});
+	$('#gameOverCloseButton').click(function () {
+		//semi clean up
+		moveDeckBackToDrawDeck();
+	});
+
 	
 	// event for the startbuttonclick
 	$('#startButton').click(function () {
 		startButtonClick();
 	});
 	
-	// speed monitor
-	$('input#speed').val(speed);
-	$('input#speed').change(function() {
-		if (parseInt($("input#speed").val()) > -1)
-			speed = parseInt($("input#speed").val());
-	});
-
 	initialiseDeck();
 }
 
 function initialiseDeck(again) {
 
-	difficulty = $("input[name=difficulty]:checked").val();
-	emblacken = $("input#emblacken").is(":checked");
-
     // Build a deck of adaman cards
-    deck = adamanCreateDeck(difficulty);
+    deck = adamanCreateDeck();
 
     // create the on screen card image tags
     createOnScreenCards(again);
+
+	//Revise the scores.
+	$("#personalityCount").html(personalityCount + " (" + personalityTotal + ")");
 
 }
 
@@ -139,8 +162,11 @@ function startButtonClick() {
     $('.panel').hide();
 
     moveDeckBackToDrawDeck();
-	if (difficulty != $("input[name=difficulty]:checked").val() || emblacken != $("input#emblacken").is(":checked")) {
-		//If these values have changed since the deck was created, then recreate it.
+	//Set the other two settings here for convenience.
+	if (getSetting('difficulty') != $("input[name=difficulty]:checked").val() || getSetting('blackmoons') != $("input#emblacken").is(":checked")) {
+		setSetting('difficulty', $("input[name=difficulty]:checked").val());
+		setSetting('blackmoons', $("input#emblacken").is(":checked").toString());
+		//If these values have changed since the deck was created, then we need to recreate it.
 		initialiseDeck(true);
 	}
     decktetShuffle(deck);
@@ -473,7 +499,7 @@ function discardCard(cardIndex,delayUnits) {
 
 function countPersonality(delayUnits) {
 	personalityCount++;
-	$("#personalityCount").html(personalityCount);
+	$("#personalityCount").html(personalityCount + " (" + personalityTotal + ")");
 	//The running score only changes for personalities, so though it was incremented elsewhere, update here.
 	$("#runningScore").html(score);
 	if (personalityCount == personalityTotal) {
@@ -566,7 +592,8 @@ function getCardIndexByID(theID) {
 //
 // create a deck of cards suitable for Adaman
 //
-function adamanCreateDeck(difficulty) {
+function adamanCreateDeck() {
+	var difficulty = getSetting('difficulty');
     var adamanDeck = decktetCreateDeck();
 	//This one can be used but would be complicated to program, so ditch it.
     adamanDeck = decktetRemoveTheExcuse(adamanDeck);
@@ -622,6 +649,7 @@ function adamanCreateDeck(difficulty) {
 // create an on-screen card element
 //
 function createOnScreenCard(card,index) {
+	var emblacken = getSetting('blackmoons');
 	var cardImage = card.Image;
 	if (emblacken && (card.Suit1 == "Moons" ||card.Suit2 == "Moons" ||card.Suit3 == "Moons"))
 		cardImage = cardImage.split(".png")[0] + "_black.png";
@@ -670,4 +698,32 @@ function gameIsOver(endCondition,delayUnits) {
 	}
 	delayUnits = typeof delayUnits !== 'undefined' ? delayUnits : 0;
     $('#gameOver').delay(delayUnits * speed).show(speed);
+}
+
+function getSetting(setting) {
+	if (window.localStorage && typeof window.localStorage.getItem(setting) !== 'undefined' && window.localStorage.getItem(setting) !== null) {
+		var value;
+		try {
+			value = window.localStorage.getItem(setting);
+		} catch (e) {
+			value = defaultSettings[setting];
+		}
+		if (setting == 'blackmoons' || setting == 'magnification')  value = (value.toLowerCase() === "true");
+		return value;
+	} else {
+		return defaultSettings[setting];
+	}
+}
+
+function setSetting(setting, value) {
+	if (window.localStorage) {
+		try {
+			window.localStorage.setItem(setting, value);
+			return true;
+		} catch (e) {
+			return false;
+		}
+	} else {
+		return false;
+	}
 }
