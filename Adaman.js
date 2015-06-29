@@ -158,7 +158,7 @@ function startButtonClick() {
 	discardCount = 0;
 
 	$("#runningScore").html(score);
-	$("#personalityCount").html(personalityCount);
+	$("#personalityCount").html(personalityCount + " (" + personalityTotal + ")");
     $('.panel').hide();
 
     moveDeckBackToDrawDeck();
