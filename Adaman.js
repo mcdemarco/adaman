@@ -8,44 +8,70 @@
 var gameOVER = false;       // overall flag to indicate the game is over
 var score = 0;
 var personalityCount = 0;
+var personalityTotal;
 var discardCount = 0;
 var speed = 300;
+var difficulty;
+var emblacken;
 
 //
 // runs when the page first loads
 //
 function initialise_GamePage() {
-    // set up the click events for the story popup
-    $('#showStoryButton').click(function () {
-        $('.panel').hide();
-        $('#whatsthestory').fadeIn(speed);
-    });
-    $('.close.button').click(function () {
-        $('.panel').hide();
-    });
-    $('#gameOverCloseButton').click(function () {
+	// set up the click events for the story popup
+	$('#showStoryButton').click(function () {
+		$('.panel').hide();
+		$('#whatsthestory').fadeIn(speed);
+	});
+	$('.close.button').click(function () {
+		$('.panel').hide();
+	});
+	$('#gameOverCloseButton').click(function () {
 		//semi clean up
-        moveDeckBackToDrawDeck();
-    });
-    $('#creditsButton').click(function () {
-        $('.panel').hide();
-        $('#gameCredits').fadeIn(speed);
-    });
+		moveDeckBackToDrawDeck();
+	});
+	$('#settingsButton').click(function () {
+		$('.panel').hide();
+		$('#settingsPanel').fadeIn(speed);
+	});
+	$('#creditsButton').click(function () {
+		$('.panel').hide();
+		$('#gameCredits').fadeIn(speed);
+	});
 	
-    $('#plusButton').click(function () {
-        $('body').toggleClass('embiggen1');
-    });
+	$('#plusButton').click(function () {
+		$('body').toggleClass('embiggen1');
+		if ($('#plusButton').html() == "Enlarge")
+			$('#plusButton').html("Normal");
+		else
+			$('#plusButton').html("Enlarge");
+	});
+	
+	// event for the startbuttonclick
+	$('#startButton').click(function () {
+		startButtonClick();
+	});
+	
+	// speed monitor
+	$('input#speed').val(speed);
+	$('input#speed').change(function() {
+		if (parseInt($("input#speed").val()) > -1)
+			speed = parseInt($("input#speed").val());
+	});
 
-    // event for the startbuttonclick
-    $('#startButton').click(function () {
-        startButtonClick();
-    });
+	initialiseDeck();
+}
+
+function initialiseDeck(again) {
+
+	difficulty = $("input[name=difficulty]:checked").val();
+	emblacken = $("input#emblacken").is(":checked");
 
     // Build a deck of adaman cards
-    deck = adamanCreateDeck();
+    deck = adamanCreateDeck(difficulty);
 
     // create the on screen card image tags
-    createOnScreenCards();
+    createOnScreenCards(again);
 
 }
 
@@ -113,6 +139,10 @@ function startButtonClick() {
     $('.panel').hide();
 
     moveDeckBackToDrawDeck();
+	if (difficulty != $("input[name=difficulty]:checked").val() || emblacken != $("input#emblacken").is(":checked")) {
+		//If these values have changed since the deck was created, then recreate it.
+		initialiseDeck(true);
+	}
     decktetShuffle(deck);
 	stackDeck();
     dealToTheCapital();
@@ -286,8 +316,12 @@ function isThereCardInSpace(spaceName) {
 //
 // create a series of image tags and load up the card images.
 // 
-function createOnScreenCards() {
+function createOnScreenCards(again) {
     pleaseWaitOn();
+	if (again) {
+		//Delete existing cards.
+		$(".card").remove();
+	}
     var p = $('#drawDeckLocation').offset();
     for (var i = deck.length - 1; i >= 0; i--) {
         createOnScreenCard(deck[i],i);
@@ -442,7 +476,7 @@ function countPersonality(delayUnits) {
 	$("#personalityCount").html(personalityCount);
 	//The running score only changes for personalities, so though it was incremented elsewhere, update here.
 	$("#runningScore").html(score);
-	if (personalityCount == 11) {
+	if (personalityCount == personalityTotal) {
 		gameIsOver("victory",delayUnits);
 	}
 }
@@ -532,16 +566,54 @@ function getCardIndexByID(theID) {
 //
 // create a deck of cards suitable for Adaman
 //
-function adamanCreateDeck() {
+function adamanCreateDeck(difficulty) {
     var adamanDeck = decktetCreateDeck();
-    adamanDeck = decktetRemoveCOURT(adamanDeck);
-    adamanDeck = decktetRemovePAWN(adamanDeck);
+	//This one can be used but would be complicated to program, so ditch it.
     adamanDeck = decktetRemoveTheExcuse(adamanDeck);
+	//The normal deck.
+	if (difficulty == "normal") {
+		adamanDeck = decktetRemoveCOURT(adamanDeck);
+		adamanDeck = decktetRemovePAWN(adamanDeck);
+		personalityTotal = 11;
+	} else if (difficulty != "easy") {
+		//Remove the non-personality pawns and courts.
+		adamanDeck = decktetRemoveCardByName(adamanDeck,'the HARVEST');
+		adamanDeck = decktetRemoveCardByName(adamanDeck,'the BORDERLAND');
+		adamanDeck = decktetRemoveCardByName(adamanDeck,'the WINDOW');
+		adamanDeck = decktetRemoveCardByName(adamanDeck,'the RITE');
+		adamanDeck = decktetRemoveCardByName(adamanDeck,'the ISLAND');
+
+		//Pick the random personality.
+		var randam = Math.floor(Math.random()*3);
+		var nameArray = ['the LIGHT KEEPER','the WATCHMAN','the CONSUL'];
+		if (difficulty == "harder") {
+			//remove 1, leave 2
+			adamanDeck = decktetRemoveCardByName(adamanDeck, nameArray[randam]);
+			personalityTotal = 13;
+		} else if (difficulty == "hard") {
+			//remove 2, leave 1
+			for (var i=0; i<3; i++) {
+				if (i != randam)
+					adamanDeck = decktetRemoveCardByName(adamanDeck, nameArray[i]);	
+			}
+			personalityTotal = 12;
+		} else {
+			//Else keep them all for hardest.
+			personalityTotal = 14;
+		}
+	} else {
+		//Set personality count for easy level.
+		personalityTotal = 14;
+	}
+	
     adamanDeck = decktetShuffle(adamanDeck);
     for (var i = 0; i < adamanDeck.length; i++) {
         adamanDeck[i].Location = 'drawDeckLocation';
         adamanDeck[i].divID = adamanDeck[i].Name.replace(/\s+/g, '');
         adamanDeck[i].selector = '#' + adamanDeck[i].divID;
+		//Tweak values of pawns and courts.
+		if (adamanDeck[i].Rank == "PAWN" || adamanDeck[i].Rank == "COURT")
+			adamanDeck[i].Value = 10;
     }
     return adamanDeck;
 }
@@ -550,7 +622,10 @@ function adamanCreateDeck() {
 // create an on-screen card element
 //
 function createOnScreenCard(card,index) {
-    var imageLit = '<div id="' + card.divID + '" class="card'  + (card.Face ? ' face' : '') + '" style="background-image:url(CardImages/' + card.Image + ');" title="' + card.Name + '"></div>';
+	var cardImage = card.Image;
+	if (emblacken && (card.Suit1 == "Moons" ||card.Suit2 == "Moons" ||card.Suit3 == "Moons"))
+		cardImage = cardImage.split(".png")[0] + "_black.png";
+    var imageLit = '<div id="' + card.divID + '" class="card'  + (card.Face ? ' face' : '') + '" style="background-image:url(CardImages/' + cardImage + ');" title="' + card.Name + '"></div>';
     $(imageLit).appendTo('#gamewrapper').hide();
 }
 

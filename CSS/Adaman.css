@@ -11,10 +11,20 @@ Creative Commons Attribution NonCommercial ShareAlike 3.0 License.
    card source file size: 372x522 
 */
 
+* {
+    box-model:border-box;
+}
+
 body {
     background-image:url('../Assets/skulls-orange.png');
     font-family: 'Fortune Letters', Unkempt, Futura, Geneva, sans-serif;
     color: #740;
+    margin:0;
+    padding:0;
+}
+
+#settingsPanel div p:first-child {
+    font-family: 'Fortune Letters', Unkempt, Futura, Geneva, sans-serif;
 }
 
 p {
@@ -28,7 +38,7 @@ p.callout {
 }
 
 #gamewrapper {
-    padding:15px 5px 5px 5px;
+    padding:10px;
     white-space:nowrap;
     min-height:572px;
 }
@@ -110,6 +120,10 @@ p.callout {
 
 #startButton {
     margin-top:10px;
+}
+
+#plusButton {
+    padding: 3px 5px;
 }
 
 .gamerow {
@@ -237,10 +251,34 @@ p.callout {
     text-shadow:1px 1px 0px #740;
 }
 
-#gameOverPalace
-{
+#gameOverPalace {
     text-shadow:1px 1px 0px #740;
 }
+
+#settingsButton {
+    font-size:x-large;
+    vertical-align:middle;
+}
+
+#settingsPanel div {
+    width:100%;
+}
+
+#settingsPanel div p {
+    display:table-cell;
+    text-align:left;
+    padding:10px 5px 30px 5px;
+}
+
+#settingsPanel div {
+    display:table-row;
+}
+
+/*
+#settingsPanel div p:last-child {
+    font-style:italic;
+}
+*/
 
 hr {
     border:0;
