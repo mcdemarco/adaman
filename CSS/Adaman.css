@@ -23,6 +23,10 @@ body {
     padding:0;
 }
 
+#settingsPanel div p:first-child {
+    font-family: 'Fortune Letters', Unkempt, Futura, Geneva, sans-serif;
+}
+
 p {
     font-family: 'Segoe UI', 'Century Gothic', 'Lucida Grande', Tahoma, 'Gill Sans', sans-serif;
     text-align:justify;
@@ -247,10 +251,34 @@ p.callout {
     text-shadow:1px 1px 0px #740;
 }
 
-#gameOverPalace
-{
+#gameOverPalace {
     text-shadow:1px 1px 0px #740;
 }
+
+#settingsButton {
+    font-size:x-large;
+    vertical-align:middle;
+}
+
+#settingsPanel div {
+    width:100%;
+}
+
+#settingsPanel div p {
+    display:table-cell;
+    text-align:left;
+    padding:10px 5px 30px 5px;
+}
+
+#settingsPanel div {
+    display:table-row;
+}
+
+/*
+#settingsPanel div p:last-child {
+    font-style:italic;
+}
+*/
 
 hr {
     border:0;

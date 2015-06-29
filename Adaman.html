@@ -61,7 +61,7 @@
 		    <hr />
 		    <div class="deckrow">
 			    <span id="showStoryButton" class="linky">Rules</span>
-			    <span id="plusButton" class="button" title="Embiggen">+</span>  
+			    <span id="settingsButton" class="linky" title="settings">&#9881;</span>  
 			    <span id="creditsButton" class="linky">Credits</span>
 		    </div>
             </div>
@@ -101,10 +101,10 @@
     <div id="whatsthestory" class="panel">
         <p class="callout">Although you are heir to the throne, the monarch might live a very long time. Your plan to speed things along will only work if the major personalities in the kingdom back your play.  You need to use your resources to buy, trick or eliminate anyone who might stand in your way, whether they're in the capital or the Palace!</p>
         <H2>How to Play</h2>
-        <p>Click on one or more of the cards in the bottom row (Resources) and on one card from the top two rows (the Palace and the Capital) to "control" it.  The total value of the selected resources must equal or exceed the value of the card you want to control, and at least one of the suits must match. (The unnumbered cards are Crowns, which count as 10, and Aces, which count as 1.)</p>
-	<p>"Personality" cards (the Decktet face cards) have a shadow to help you spot them.  When you control a Personality, the card is discarded and you score points.  When you control a non-personality card, it is moved to your resources.  The resources you used to control a card are discarded.</p>
-	<p>All holes in the Capital or Resources are filled in from the deck, but Personalities cannot be Resources; they go to the Palace instead.  Don't let more than 5 Personalities collect in the Palace, or together they will defeat you.  You also lose if you run out of moves before eliminating all eleven Personalities.</p>
-	<p>The <a href="http://wiki.decktet.com/game:adaman">rules</a> are also in the Decktet Wiki. For advice, see <a href="http://boardgamegeek.com/thread/676240/staving-bad-luck-strategy">the Adaman strategy forum</a> at BoardGameGeek.</p>
+        <p>Click on one or more of the cards in the bottom row (Resources) and on one card from the top two rows (the Palace and the Capital) to "control" it.  The total value of the selected resources must equal or exceed the value of the card you want to control, and at least one of the suits must match.  (The unnumbered, single-suited cards are Crowns, which have a crown and count as 10, and Aces, which count as 1.  If you add the triple-suited Pawns and Courts, they also have a value of 10.)</p>
+	<p>"Personality" cards (the Decktet face cards) have a shadow to help you spot them.  When you control a Personality, the card is discarded and you score points equal to its value.  When you control a non-personality card, it is moved to your resources.  The resources you used to control a card are discarded.</p>
+	<p>All holes in the Capital and Resource rows are filled in from the deck, but Personalities cannot be Resources; they go into the Palace row instead.  Don't let more than 5 Personalities collect in the Palace, or together they will defeat you.  You also lose if you run out of moves before eliminating all eleven (or more) Personalities.</p>
+	<p>You can switch to an easier or some harder variants in the Settings (click the gear icon).  The rules are also available <a href="Assets/rules-adaman.pdf">as a PDF</a> and in more detail <a href="http://wiki.decktet.com/game:adaman">in the Decktet Wiki</a>. For advice, see <a href="http://boardgamegeek.com/thread/676240/staving-bad-luck-strategy">the Adaman strategy forum</a> at BoardGameGeek.</p>
         <div class="close button">Close</div>
     </div>
 
@@ -119,13 +119,52 @@
         <div id="gameOverCloseButton" class="close button">Close</div>
     </div>
 
+    <div id="settingsPanel" class="panel">
+        <h2>Settings</h2>
+	<div>
+		<p style="text-align:right;">
+			Speed:&nbsp;<input type="text" id="speed" value="" size="4"/>
+		</p>
+		<p>The card animation makes it easier to see what's going on in the game, but can be slow on mobile.  Set the speed to 0 to turn off animation, or increase it to slow the cards down.</p>
+	</div>
+
+	<div>
+		<p style="text-align:right;">
+			<span id="plusButton" class="button">Enlarge</span>
+		</p>
+		<p>Normal card size shows the full card, but it can be hard to make out the suits this way.  Press the Enlarge button at any time to zoom in to just the upper left corners of the cards, or the Normal button to unzoom.</p>
+	</div>
+
+	<div>
+		<p style="text-align:right;white-space:nowrap;">
+			<input type="checkbox" id="emblacken" title="Emblacken" checked /> Black&nbsp;Moons
+		</p>
+		<p>For added legibility, the cards have been altered slightly to include a black sky background on the moon suit.  Uncheck this option to use the unadulterated artwork.<br/>
+		(You must start a new game for changes to this setting to take effect.)</p>
+	</div>
+
+	<div>
+		<p style="white-space:nowrap;">
+			<input type="radio" name="difficulty" value="easy">Easy</input><br/>
+			<input type="radio" name="difficulty" value="normal" checked>Normal</input><br/>
+			<input type="radio" name="difficulty" value="hard">Hard</input><br/>
+			<input type="radio" name="difficulty" value="harder">Harder</input><br/>
+			<input type="radio" name="difficulty" value="hardest">Hardest</input>
+		</p>
+		<p>The game can be made easier by the addition of the four Pawns and four Courts, each of which get a value of 10.  It can be made harder with the addition of only the Pawn and Court personalities.<br/>
+		"Hard" adds one personality, "Harder" adds 2, and "Hardest" adds all 3 extra personalities.<br/>
+		(You must start a new game for changes to this setting to take effect.)</p>
+	</div>
+        <span id="gameOverCloseButton" class="close button">Close</span>
+    </div>
+
     <div id="gameCredits" class="panel">
         <h2>Credits</h2>
-        <p>The Decktet Card system was created by P.D. Magnus. The card images and card backs shown here are released under a Creative Commons License by P.D. Magnus.</p>
+        <p>The Decktet Card system was created by P.D. Magnus. The card images and card backs shown here are released under a Creative Commons License by P.D. Magnus.  The black moons are a cosmetic change by M.C.DeMarco for legibility on small screens.</p>
         <p>Please visit the <a href="http://www.decktet.com/">Decktet web site</a> to find out about all of the great games you can play with the Decktet.</p>
         <p>This game, ADAMAN, was designed by P.D. Magnus and inspired by James Kyle's portraits.</p>
         <p>This electronic web version of ADAMAN was created by Felbrigg Herriot and is released under a Creative Commons Attribution NonCommercial ShareAlike 3.0 License.  Some alterations were made by M.C.DeMarco; both versions of the code are available <a href="https://github.com/mcdemarco/adaman">at Github</a>.</p>
-	<p>The background texture is "Skulls" by Adam, from <a href="http://subtlepatterns.com/skulls/">Subtle Textures</a>.</p>
+	<p>The background texture is "Skulls" by Adam, from <a href="http://subtlepatterns.com/skulls/">Subtle Patterns</a>.</p>
         <div class="close button">Close</div>
     </div>
     
