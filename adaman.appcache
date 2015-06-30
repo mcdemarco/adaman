@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v1 - 2015-06-29
+# v2 - 2015-06-29
 # Adaman.html is the file that calls the manifest.
 
 CACHE:
@@ -8,7 +8,7 @@ http://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.j
 Decktet.js
 Adaman.js
 CSS/Adaman.css
-http://fonts.googleapis.com/css?family=Unkempt:400,700
+Assets/fortune-letters.ttf
 Assets/skulls-orange.png
 Assets/rules-adaman.pdf
 CardImages/11_court_consul.png

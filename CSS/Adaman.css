@@ -15,16 +15,21 @@ Creative Commons Attribution NonCommercial ShareAlike 3.0 License.
     box-model:border-box;
 }
 
+@font-face {
+    font-family: "Fortune Letters";
+    src: url(../Assets/fortune-letters.ttf) format("truetype");
+}
+
 body {
     background-image:url('../Assets/skulls-orange.png');
-    font-family: 'Fortune Letters', Unkempt, Futura, Geneva, sans-serif;
+    font-family: 'Fortune Letters', Futura, Geneva, sans-serif;
     color: #740;
     margin:0;
     padding:0;
 }
 
 #settingsPanel div p:first-child {
-    font-family: 'Fortune Letters', Unkempt, Futura, Geneva, sans-serif;
+    font-family: 'Fortune Letters', Futura, Geneva, sans-serif;
 }
 
 p {
