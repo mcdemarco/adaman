@@ -77,9 +77,12 @@ function initialise_GamePage() {
 	});
 
 	
-	// event for the startbuttonclick
+	// evente for the start/replay buttons
 	$('#startButton').click(function () {
 		startButtonClick();
+	});
+	$('#replayButton').click(function () {
+		startButtonClick(true);
 	});
 	
 	initialiseDeck();
@@ -151,7 +154,7 @@ function canCardBeBeatenByResources(targetCard, onlyCheckSelectedResourceCards) 
 //
 // Start button click event
 //
-function startButtonClick() {
+function startButtonClick(replay) {
     gameOVER = false;
     score = 0;
 	personalityCount = 0;
@@ -169,7 +172,8 @@ function startButtonClick() {
 		//If these values have changed since the deck was created, then we need to recreate it.
 		initialiseDeck(true);
 	}
-    decktetShuffle(deck);
+	if (!replay)
+		decktetShuffle(deck);
 	stackDeck();
     dealToTheCapital();
     dealToTheResources();
@@ -683,6 +687,10 @@ function gameIsOver(endCondition,delayUnits) {
 	if (endCondition == "victory") {
 		//We have some more scoring to do.
 		score += getResourceScore();
+		$('#runningScore').html(score.toString());
+	} else if (endCondition == "palace") {
+		//We have some unscoring to do.
+		score = 0;
 		$('#runningScore').html(score.toString());
 	}
     $('#finalScore').html(score.toString());
