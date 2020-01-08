@@ -18,3 +18,4 @@ Some changes are purely cosmetic.  Some were inspired by a Java implementation o
 
 * [Decktet](http://decktet.com)
 * [Adaman implementations list](http://boardgamegeek.com/geeklist/140943/item/2285753#item2285753) at BGG
+* [My implementation list](http://mcdemarco.net/games/decktet/#Online.Games)
