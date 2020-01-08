@@ -1,10 +1,10 @@
 CACHE MANIFEST
-# v3 - 2015-07-06
+# v3 - 2020-01-08
 # Adaman.html is the file that calls the manifest.
 
 CACHE:
-http://code.jquery.com/jquery-latest.min.js
-http://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js
+js/jquery-latest.min.js
+js/jquery.transit.min.js
 Decktet.js
 Adaman.js
 CSS/Adaman.css
