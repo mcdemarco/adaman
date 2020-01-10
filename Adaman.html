@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html manifest="adaman.appcache">
+<html> <!-- manifest="adaman.appcache"> --> 
 <head>
 	<title>Adaman, a Decktet game</title>
 	<meta name="mobile-web-app-capable" content="yes">
@@ -53,7 +53,7 @@
 			    Score:&nbsp;<span id="runningScore">0</span>
 		    </div>
 		    <div class="deckrow" title="Personalities controlled so far.">
-			    Personalities:&nbsp;<span title="Personalities controlled" id="personalityCount">0</span>
+			    <span id="personalitiesButton" class="linky" title="Click to view all Personalities.">Personalities:</span>&nbsp;<span title="Personalities controlled" id="personalityCount">0</span>
 		    </div>
 		    
 		    <div id="startButton" class="button">New Game</div>
@@ -106,6 +106,41 @@
 	<p>All holes in the Capital and Resource rows are filled in from the deck, but Personalities cannot be Resources; they go into the Palace row instead.  Don't let more than 5 Personalities collect in the Palace, or together they will defeat you.  You also lose if you run out of moves before eliminating all eleven (or more) Personalities.</p>
 	<p>You can switch to an easier or some harder variants in the Settings (click the gear icon).  The rules are also available <a href="Assets/rules-adaman.pdf">as a PDF</a> and in more detail <a href="http://wiki.decktet.com/game:adaman">in the Decktet Wiki</a>. For advice, see <a href="http://boardgamegeek.com/thread/676240/staving-bad-luck-strategy">the Adaman strategy forum</a> at BoardGameGeek.</p>
         <div class="close button">Close</div>
+    </div>
+
+    <div id="personalityPanel" class="panel">
+
+						<div id="personalityPanelWrapper">
+
+										<h2>Personalities</h2>
+
+										<p>&nbsp;</p>
+										
+										<div class="gamerow">
+														<div class="backgroundtext">Personalities</div>
+														<div class="cardspace" id = "perAUTHOR"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perPAINTER"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perSAVAGE"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perSAILOR"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perSOLDIER"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perLUNATIC"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perPENITENT"><div class="pers face card"></div></div>
+										</div>
+										<div class="gamerow">
+														<div class="cardspace" id = "perDIPLOMAT"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perMERCHANT"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perHUNTRESS"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perBARD"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perLIGHT_KEEPER"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perCONSUL"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perWATCHMAN"><div class="pers face card"></div></div>
+										</div>
+
+										<div class="buttonWrapper">
+														<div class="close button">Close</div>
+										</div>
+						</div>
+
     </div>
 
     <div id="pleaseWait" class="panel">
