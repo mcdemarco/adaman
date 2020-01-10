@@ -29,7 +29,7 @@ body {
 }
 
 #settingsPanel div p:first-child {
-    font-family: 'Fortune Letters', Unkempt, Futura, Geneva, sans-serif;
+    font-family: 'Fortune Letters', Futura, Geneva, sans-serif;
 }
 
 p {
@@ -43,9 +43,11 @@ p.callout {
 }
 
 #gamewrapper {
-    padding:10px;
+    margin:auto;
     white-space:nowrap;
     min-height:572px;
+    max-width:1000px;
+    padding:10px;
 }
 
 .embiggen #gamewrapper {
@@ -54,18 +56,23 @@ p.callout {
 
 #playarea {
     min-width:955px;
-    margin:2px;
+    padding:2px;
+    padding-left:auto;
+}
+
+#playarea div.gamerow {
+    float:right;
 }
 
 .embiggen #playarea {
     min-width:780px;
 }
 
-#deckcolumn {
-    margin:2px;
+#deckcolumn, #personalityColumn {
+    padding:2px;
     min-width:190px;
     width:20%;
-    height:550px; 
+    height:550px;
     display:inline-block;
     float:left;
     text-align:center;   
@@ -76,8 +83,7 @@ p.callout {
     height:500px;
 }
 
-.titlerow
-{
+.titlerow {
     height:30px;
     margin:2px;
     min-width:100%;
@@ -132,7 +138,7 @@ p.callout {
 }
 
 .gamerow {
-    margin:4px;
+    padding:4px;
     float:left;
     height:187px;
     width:720px;
@@ -141,14 +147,14 @@ p.callout {
 }
 
 .embiggen .gamerow {
-    margin:2px;
+    padding:2px;
     height:163px;
     width:600px;
     min-width:550px;
 }
 
 .deckrow {
-    margin-top:10px;
+    padding-top:10px;
 }
 
 #drawDeckLocation.full {
@@ -172,11 +178,10 @@ p.callout {
     border-radius:6px;
 }
 
-.embiggen1 .card {
+.embiggen1 .card, .embiggen1 #personalityPanel .cardspace {
     background-size:248px 348px;
     border-radius:12px 0 0 0;
 }
-
 
 .cardspace, #deckcolumn .cardspace {
     border:thin solid #740;
@@ -224,8 +229,32 @@ p.callout {
     box-shadow: 6px 8px 4px #740;
 }
 
+.pers.face {
+    box-shadow: none;
+}
+
+.pers.face.uncontrolled {
+    box-shadow: 6px 8px 4px #700;
+}
+
+.pers.face.controlled {
+    box-shadow: 6px 8px 4px rgba(0,119,0,0.66);
+}
+
 .embiggen1 .card.face {
     box-shadow: -6px -8px 4px #740;
+}
+
+.embiggen1 .card.pers.face {
+    box-shadow: none;
+}
+
+.embiggen1 .card.pers.face.uncontrolled {
+    box-shadow: -6px -8px 4px #700;
+}
+
+.embiggen1 .card.pers.face.controlled {
+    box-shadow: -6px -8px 4px rgba(0,119,0,0.66);
 }
 
 .cardselected {
@@ -248,8 +277,34 @@ p.callout {
     color:white;
     font-weight:normal;
     font-size:12pt;
-    padding: 5%;
+    padding: 5% 20%;
     z-index:51;
+}
+
+#personalityPanel.panel {
+    padding: 2% 5%;
+    text-align:center;
+    width:100%;
+}
+
+#personalityPanelWrapper {
+    margin:0 auto;
+    max-width:1000px;
+    text-align:center;
+}
+
+#personalityPanelWrapper p {
+    text-align:center;
+}
+
+#personalityPanel .gamerow, .embiggen #personalityPanel .gamerow {
+    width:1000px;
+}
+
+#personalityPanel div.buttonWrapper {
+    padding-top:4%;
+    display:block;
+    clear:both;
 }
 
 #gameovernomoves {
