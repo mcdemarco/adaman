@@ -5,15 +5,15 @@
 //
 // Global Variables
 //
-var gameOVER = false;       // overall flag to indicate the game is over
+var gameOVER = false;			 // overall flag to indicate the game is over
 var score = 0;
 var personalityCount = 0;
 var personalityTotal;
 var discardCount = 0;
 var defaultSettings = {speed: 300,
-					   magnification: false,
-					   blackmoons: true,
-					   difficulty: 'normal'};
+						 magnification: false,
+						 blackmoons: true,
+						 difficulty: 'normal'};
 var speed;
 
 //
@@ -77,7 +77,7 @@ function initialise_GamePage() {
 	});
 	$('#gameOverCloseButton').click(function () {
 		//semi clean up
-		moveDeckBackToDrawDeck();
+		//moveDeckBackToDrawDeck();
 	});
 	
 
@@ -94,11 +94,11 @@ function initialise_GamePage() {
 
 function initialiseDeck(again) {
 
-  // Build a deck of adaman cards
-  deck = adamanCreateDeck();
+	// Build a deck of adaman cards
+	deck = adamanCreateDeck();
 	
-  // create the on screen card image tags
-  createOnScreenCards(again);
+	// create the on screen card image tags
+	createOnScreenCards(again);
 
 	//Revise the scores.
 	$("#personalityCount").html(personalityCount + " (" + personalityTotal + ")");
@@ -109,19 +109,19 @@ function initialiseDeck(again) {
 // checks to see if it is posible to make a move, returns true if there is
 //
 function isThereAMove() {
-    var returnValue = false; // assume can not go.
+		var returnValue = false; // assume can not go.
 
-    // iterate through the Palace & capital spaces, and check each card
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
-            returnValue = canCardBeBeatenByResources(i,false);
-            if (returnValue) {
-                break;
-            }
-        }
-    }
+		// iterate through the Palace & capital spaces, and check each card
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
+						returnValue = canCardBeBeatenByResources(i,false);
+						if (returnValue) {
+								break;
+						}
+				}
+		}
 
-    return returnValue;
+		return returnValue;
 }
 
 //
@@ -129,72 +129,93 @@ function isThereAMove() {
 // spaces to defeat the indicated card
 //
 function canCardBeBeatenByResources(targetCard, onlyCheckSelectedResourceCards) {
-    var returnValue = false;
-    var cardValue = deck[targetCard].Value;
-    var matchingCardScores = 0;
+		var returnValue = false;
+		var cardValue = deck[targetCard].Value;
+		var matchingCardScores = 0;
 
-    // loop through all cards on the resource line and get the total values of all suits
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Location.substring(0, 3) == 'res') {
+		// loop through all cards on the resource line and get the total values of all suits
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Location.substring(0, 3) == 'res') {
 
-            if ((onlyCheckSelectedResourceCards == false) || (onlyCheckSelectedResourceCards == true && deck[i].Selected == true)) {
+						if ((onlyCheckSelectedResourceCards == false) || (onlyCheckSelectedResourceCards == true && deck[i].Selected == true)) {
 
-                // does this resource card match the target at all?
-                if (decktetDoCardsMatchOnAnySuit(targetCard, i)) {
-                    // we have a match, so add the cards score
-                    matchingCardScores += deck[i].Value;
-                }
-            }
-        }
-    }
+								// does this resource card match the target at all?
+								if (decktetDoCardsMatchOnAnySuit(targetCard, i)) {
+										// we have a match, so add the cards score
+										matchingCardScores += deck[i].Value;
+								}
+						}
+				}
+		}
 
-    if (matchingCardScores >= cardValue) {
-        returnValue = true;
-    }
+		if (matchingCardScores >= cardValue) {
+				returnValue = true;
+		}
 
-    return returnValue;
+		return returnValue;
+}
+
+//
+// cleans up the selected resources as part of clicking a target card
+//
+function unselectNonMatchingResources(targetCard) {
+	// loop through all cards on the resource line and unselect the irrelevant ones.
+	for (var i = 0; i < deck.length; i++) {
+		if (deck[i].Location.substring(0, 3) == 'res') {
+			if (deck[i].Selected == true && !decktetDoCardsMatchOnAnySuit(targetCard, i)) {
+				// This resource card is selected but doesn't match the target.
+				deck[i].Selected = false;
+				$(deck[i].selector).removeClass('cardselected');
+			}
+		}
+	}
 }
 
 //
 // Start button click event
 //
 function startButtonClick(replay) {
-  gameOVER = false;
-  score = 0;
+	gameOVER = false;
+	score = 0;
 	personalityCount = 0;
 	discardCount = 0;
 
 	$("#runningScore").html(score);
 	$("#personalityCount").html(personalityCount + " (" + personalityTotal + ")");
-  $('.panel').hide();
+	$('.panel').hide();
+	$(".pers").removeClass("controlled").removeClass("uncontrolled");
 
-  moveDeckBackToDrawDeck();
+	moveDeckBackToDrawDeck();
 	//Set the other two settings here for convenience.
 	if (getSetting('difficulty') != $("input[name=difficulty]:checked").val() || getSetting('blackmoons') != $("input#emblacken").is(":checked")) {
 		setSetting('difficulty', $("input[name=difficulty]:checked").val());
 		setSetting('blackmoons', $("input#emblacken").is(":checked").toString());
 		//If these values have changed since the deck was created, then we need to recreate it.
 		initialiseDeck(true);
+	} else {
+		$('.pers[style*="url"]').addClass("uncontrolled");
 	}
+
+
 	if (!replay)
 		decktetShuffle(deck);
 	stackDeck();
-  dealToTheCapital();
-  dealToTheResources();
-  var canContinue = isThereAMove();
-  if (!canContinue) {
+	dealToTheCapital();
+	dealToTheResources();
+	var canContinue = isThereAMove();
+	if (!canContinue) {
 		//Delay is for 5 capitol cards + 5 palace cards + up to 5 resource cards.
-    gameIsOver(15);
-  }
+		gameIsOver(15);
+	}
 }
 
 function moveDeckBackToDrawDeck() {
 	$("#drawDeckLocation").addClass("full");
-    for (var i = 0; i < deck.length; i++) {
-        deck[i].Selected = false;
-        moveCardToSpace(i, 'drawDeckLocation', 0.1);
-        $(deck[i].selector).removeClass('cardselected').hide();
-    }
+	for (var i = 0; i < deck.length; i++) {
+		deck[i].Selected = false;
+		moveCardToSpace(i, 'drawDeckLocation', 0.1);
+		$(deck[i].selector).removeClass('cardselected').hide();
+	}
 }
 
 
@@ -218,68 +239,68 @@ function dealToTheResources(delayUnits) {
 // returns true if successful
 //
 function dealToResourceSpace(spaceName, delayUnits) {
-    var returnValue = false;
-    if (!isThereCardInSpace(spaceName)) {
-        var c = getIndexOfTopCardOnDrawDeck();
-        if (c != -1) {
-            if (typeof (c) != 'undefined') {
-                if (deck[c].Face) {
-                    pushCardToPalace(c,delayUnits);
-                    returnValue = false;
-                } else {
-                    moveCardToSpace(c, spaceName,delayUnits);
-                    returnValue = true;
-                }
-            }
-        } else {
-            // no cards to deal
-            returnValue = true;
-        }
-
-    } else {
-        // there is a card in the space
-        returnValue = true;
-    }
+	var returnValue = false;
+	if (!isThereCardInSpace(spaceName)) {
+		var c = getIndexOfTopCardOnDrawDeck();
+		if (c != -1) {
+			if (typeof (c) != 'undefined') {
+				if (deck[c].Face) {
+					pushCardToPalace(c,delayUnits);
+					returnValue = false;
+				} else {
+					moveCardToSpace(c, spaceName,delayUnits);
+					returnValue = true;
+				}
+			}
+		} else {
+			// no cards to deal
+			returnValue = true;
+		}
+		
+	} else {
+		// there is a card in the space
+		returnValue = true;
+	}
 	if (!isThereCardInSpace('drawDeckLocation')) {
 		//We used the last card.
 		$("#drawDeckLocation").removeClass("full");
 	}
-    return returnValue;
+	return returnValue;
 }
 
 //
 // Card was being dealt to resource but was a Face so is now being pushed to the Palace
 // Returns true if able to place the card
 function pushCardToPalace(indexOfCard, delayUnits) {
-  var returnValue = false;
-  var freeSpace = '';
+	var returnValue = false;
+	var freeSpace = '';
 	
-  if (!isThereCardInSpace('palace1')) {
-    freeSpace = 'palace1';
+	if (!isThereCardInSpace('palace1')) {
+		freeSpace = 'palace1';
 		delayUnits = delayUnits - 0.83;
-  } else if (!isThereCardInSpace('palace2')) {
-    freeSpace = 'palace2';
+	} else if (!isThereCardInSpace('palace2')) {
+		freeSpace = 'palace2';
 		delayUnits = delayUnits - 0.66;
-  } else if (!isThereCardInSpace('palace3')) {
-    freeSpace = 'palace3';
+	} else if (!isThereCardInSpace('palace3')) {
+		freeSpace = 'palace3';
 		delayUnits = delayUnits - 0.5;
-  } else if (!isThereCardInSpace('palace4')) {
-    freeSpace = 'palace4';
+	} else if (!isThereCardInSpace('palace4')) {
+		freeSpace = 'palace4';
 		delayUnits = delayUnits - 0.33;
-  } else if (!isThereCardInSpace('palace5')) {
-    freeSpace = 'palace5';
+	} else if (!isThereCardInSpace('palace5')) {
+		freeSpace = 'palace5';
 		delayUnits = delayUnits - 0.17;
-  }
+	}
 
-    if (freeSpace != '') {
-        moveCardToSpace(indexOfCard, freeSpace, delayUnits);
-        returnValue = true;
-    } else {
-        // no palace spaces available the game is over
-        gameIsOver("palace",delayUnits);
-    }
+		if (freeSpace != '') {
+				moveCardToSpace(indexOfCard, freeSpace, delayUnits);
+				returnValue = true;
+		} else {
+				// no palace spaces available the game is over
+				gameIsOver("palace",delayUnits);
+		}
 
-    return returnValue;
+		return returnValue;
 }
 
 //
@@ -306,17 +327,17 @@ function dealToTheCapital(discardCount) {
 // move specified card to a new location
 //
 function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
-  // find target details
-  var targetOffset = $('#' + spaceID).offset();
+	// find target details
+	var targetOffset = $('#' + spaceID).offset();
 	if (typeof delayUnits == 'undefined') 
 		delayUnits = 1;
 	var delay = delayUnits * speed;
 	if (spaceID != "drawDeckLocation") {
 		$(deck[indexOfCard].selector).fadeIn(speed);
 	}
-  $(deck[indexOfCard].selector).delay(delay).transition({left:targetOffset.left, top:targetOffset.top},speed,"snap");
-  // reset cards location
-  deck[indexOfCard].Location = spaceID;
+	$(deck[indexOfCard].selector).delay(delay).transition({left:targetOffset.left, top:targetOffset.top},speed,"snap");
+	// reset cards location
+	deck[indexOfCard].Location = spaceID;
 }
 
 
@@ -324,173 +345,186 @@ function moveCardToSpace(indexOfCard, spaceID, delayUnits) {
 // get index of the top card in the drawdeck
 //
 function getIndexOfTopCardOnDrawDeck() {
-    var returnValue = -1;
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Location == 'drawDeckLocation') {
-            returnValue = i;
-            break;
-        }
-    }
-    return returnValue;
+		var returnValue = -1;
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Location == 'drawDeckLocation') {
+						returnValue = i;
+						break;
+				}
+		}
+		return returnValue;
 }
 
 //
 // check if a card exists in selected space
 //
 function isThereCardInSpace(spaceName) {
-    var returnValue = false;                    // 256 error line
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Location == spaceName) {
-            returnValue = true;
-            break;
-        }
-    }
-    return returnValue;
+		var returnValue = false;										// 256 error line
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Location == spaceName) {
+						returnValue = true;
+						break;
+				}
+		}
+		return returnValue;
 }
 
 //
 // create a series of image tags and load up the card images.
 // 
 function createOnScreenCards(again) {
-  pleaseWaitOn();
+	pleaseWaitOn();
 	if (again) {
 		//Delete existing cards.
 		$(".card:not(.pers)").remove();
-		$(".pers").css("background-image","none").removeClass("controlled").removeClass("uncontrolled");
+		$(".pers").css("background-image","none");
 	}
-  var p = $('#drawDeckLocation').offset();
-  for (var i = deck.length - 1; i >= 0; i--) {
-    createOnScreenCard(deck[i],i);
-    $(deck[i].selector).offset({ top: p.top, left: p.left });
-    $(deck[i].selector).click(function () { cardClick(this.id); });
-  }
-  pleaseWaitOff();
+	var p = $('#drawDeckLocation').offset();
+	for (var i = deck.length - 1; i >= 0; i--) {
+		createOnScreenCard(deck[i],i);
+		$(deck[i].selector).offset({ top: p.top, left: p.left });
+		$(deck[i].selector).click(function () { cardClick(this.id); });
+	}
+	pleaseWaitOff();
+}
+
+//
+// handle a card being defeated
+//
+function defeatCard(targetCardIndex) {
+	// Remove resource cards that match target card suits.
+				var discardCount = 1;
+				for (var i = 0; i < deck.length; i++) {
+					if (deck[i].Selected == true) {
+						if (deck[i].Location.substring(0, 3) == 'res') {
+							if (decktetDoCardsMatchOnAnySuit(targetCardIndex, i)) {
+								discardCount++;
+								discardCard(i,discardCount);
+							}
+						}
+					}
+				}
+				
+
+				// increment score
+				//score++;
+				if (deck[targetCardIndex].Face) {
+					score += deck[targetCardIndex].Value;
+				}
+				
+				// If target card is not a face card is should be moved to the resource line.
+				if (deck[targetCardIndex].Face == false) {
+					if (!isThereCardInSpace('resource1')) {
+						moveCardToSpace(targetCardIndex, 'resource1',discardCount);
+					} else if (!isThereCardInSpace('resource2')) {
+						moveCardToSpace(targetCardIndex, 'resource2',discardCount);
+					} else if (!isThereCardInSpace('resource3')) {
+						moveCardToSpace(targetCardIndex, 'resource3',discardCount);
+					} else if (!isThereCardInSpace('resource4')) {
+						moveCardToSpace(targetCardIndex, 'resource4',discardCount);
+					} else if (!isThereCardInSpace('resource5')) {
+						moveCardToSpace(targetCardIndex, 'resource5',discardCount);
+					}
+				} else {
+					// the card is a face card, so simply discard it
+					discardCard(targetCardIndex,1);
+				}
+					
+				// deselect target card.
+				deck[targetCardIndex].Selected = false;
+				$(deck[targetCardIndex].selector).delay(discardCount).removeClass('cardselected');
+				
+				// Deal to capital and resource lines.
+				dealToTheCapital(discardCount);
+				// +1 for any Capital cards, +1 for any Palace deals.
+				dealToTheResources(discardCount + 2);
+				
+				// if there are no cards in the resource line, the game is over
+				if (getResourceCount() == 0) {
+					//This would fall through to (and hopefully fail) the move check, but stop anyway.
+					gameIsOver('noMoves',discardCount + 2);
+				}
+	return discardCount;
 }
 
 //
 // handle a card being clicked on
 //
 function cardClick(theImageID) {
-    if (gameOVER) {
-        return;
-    }
+	if (gameOVER) {
+		return;
+	}
+	
+	var cardIndex = getCardIndexByID(theImageID);
+	
+	if (deck[cardIndex].Selected) {
+		// deselect card
+		deck[cardIndex].Selected = false;
+		$(deck[cardIndex].selector).removeClass('cardselected');
+	} else {
+		// select card
+		
+		// if this card is on the palace or capital line, deselect all other palace and capital cards
+		if (deck[cardIndex].Location.substring(0, 3) == 'pal' || deck[cardIndex].Location.substring(0, 3) == 'cap') {
+			deselectAllCardsOnRow('palace');
+			deselectAllCardsOnRow('capital');
+		}
+		
+		// mark the card as selected.
+		deck[cardIndex].Selected = true;
+		$(deck[cardIndex].selector).addClass('cardselected');
 
-    var cardIndex = getCardIndexByID(theImageID);
+		if (checkIfTargetAndResourceCardsAreSelected()) {
 
-    if (deck[cardIndex].Selected) {
-        // deselect card
-        deck[cardIndex].Selected = false;
-        $(deck[cardIndex].selector).removeClass('cardselected');
-    } else {
-        // select card
+			// Get the index of target Card
+			var targetCardIndex = getTargetCardIndex();
 
-        // if this card is on the palace or capital line, deselect all other palace and capital cards
-        if (deck[cardIndex].Location.substring(0, 3) == 'pal' || deck[cardIndex].Location.substring(0, 3) == 'cap') {
-            deselectAllCardsOnRow('palace');
-            deselectAllCardsOnRow('capital');
-        }
+			//Unselect any non-matching resources for clarity.
+			unselectNonMatchingResources(targetCardIndex);
+				
+			if (canTargetBeDefeatedBySelectedResources()) {
+				//Defeat the card.
+				discardCount = defeatCard(targetCardIndex);
+			}
+		}
 
-        // mark the card as selected.
-        deck[cardIndex].Selected = true;
-        $(deck[cardIndex].selector).addClass('cardselected');
-
-      if (checkIfTargetAndResourceCardsAreSelected()) {
-        if (canTargetBeDefeatedBySelectedResources()) {
-          // Get the index of target Card
-          var targetCardIndex = getTargetCardIndex();
-          
-          // Remove resource cards that match target card suits.
-					var discardCount = 1;
-          for (var i = 0; i < deck.length; i++) {
-            if (deck[i].Selected == true) {
-              if (deck[i].Location.substring(0, 3) == 'res') {
-                if (decktetDoCardsMatchOnAnySuit(targetCardIndex, i)) {
-									discardCount++;
-                  discardCard(i,discardCount);
-                }
-              }
-            }
-          }
-					
-
-          // increment score
-          //score++;
-          if (deck[targetCardIndex].Face) {
-            score += deck[targetCardIndex].Value;
-          }
-
-          // If target card is not a face card is should be moved to the resource line.
-          if (deck[targetCardIndex].Face == false) {
-                    if (!isThereCardInSpace('resource1')) {
-                        moveCardToSpace(targetCardIndex, 'resource1',discardCount);
-                    } else if (!isThereCardInSpace('resource2')) {
-                        moveCardToSpace(targetCardIndex, 'resource2',discardCount);
-                    } else if (!isThereCardInSpace('resource3')) {
-                        moveCardToSpace(targetCardIndex, 'resource3',discardCount);
-                    } else if (!isThereCardInSpace('resource4')) {
-                        moveCardToSpace(targetCardIndex, 'resource4',discardCount);
-                    } else if (!isThereCardInSpace('resource5')) {
-                        moveCardToSpace(targetCardIndex, 'resource5',discardCount);
-                    }
-          } else {
-                    // the card is a face card, so simply discard it
-                    discardCard(targetCardIndex,1);
-          }
-					
-					// deselect target card.
-          deck[targetCardIndex].Selected = false;
-          $(deck[targetCardIndex].selector).delay(discardCount).removeClass('cardselected');
-					
-          // Deal to capital and resource lines.
-          dealToTheCapital(discardCount);
-					// +1 for any Capital cards, +1 for any Palace deals.
-          dealToTheResources(discardCount + 2);
-					
-          // if there are no cards in the resource line, the game is over
-          if (getResourceCount() == 0) {
-						//This would fall through to (and hopefully fail) the move check, but stop anyway.
-						gameIsOver('noMoves',discardCount + 2);
-          }
-        }
-      }
-
-      if (!isThereAMove()) {
-        gameIsOver('noMoves',discardCount + 2);
-      }
-    }
+		if (!isThereAMove()) {
+			gameIsOver('noMoves',discardCount + 2);
+		}
+	}
 }
 
 //
 // count the number of cards in the resource line
 //
 function getResourceCount() {
-    var returnValue = 0;
+		var returnValue = 0;
 
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Location.substring(0, 3) == 'res') {
-            returnValue++;
-            if(returnValue == 5) { break; }
-        }
-    }
-    return returnValue;
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Location.substring(0, 3) == 'res') {
+						returnValue++;
+						if(returnValue == 5) { break; }
+				}
+		}
+		return returnValue;
 }
 
 //
 // get the total card value in the resource line for scoring
 //
 function getResourceScore() {
-  var returnValue = 0;
+	var returnValue = 0;
 	var resourceCount = getResourceCount();
 	var resourceCounter = 0;
 
-  for (var i = 0; i < deck.length; i++) {
-    if (deck[i].Location.substring(0, 3) == 'res') {
-      returnValue += deck[i].Value;
+	for (var i = 0; i < deck.length; i++) {
+		if (deck[i].Location.substring(0, 3) == 'res') {
+			returnValue += deck[i].Value;
 			resourceCounter++;
-      if (resourceCounter == resourceCount) { break; }
-    }
-  }
-  return returnValue;
+			if (resourceCounter == resourceCount) { break; }
+		}
+	}
+	return returnValue;
 }
 
 
@@ -499,10 +533,10 @@ function getResourceScore() {
 //
 function discardCard(cardIndex,delayUnits) {
 	discardCount++;
-  deck[cardIndex].Selected = false; // deselect it card
-  $(deck[cardIndex].selector).removeClass('cardselected');
+	deck[cardIndex].Selected = false; // deselect it card
+	$(deck[cardIndex].selector).removeClass('cardselected');
 	$(deck[cardIndex].selector).css("z-index",delayUnits);
-  moveCardToSpace(cardIndex, 'discardDeckLocation',1);
+	moveCardToSpace(cardIndex, 'discardDeckLocation',1);
 	if (deck[cardIndex].Face) {
 		countPersonality(delayUnits);
 		//Mark personality controlled in the personality display.
@@ -525,16 +559,16 @@ function countPersonality(delayUnits) {
 // get the index of the Target Card
 //
 function getTargetCardIndex() {
-    var returnValue = -1;
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Selected) {
-            if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
-                returnValue = i;
-                break;        
-            }
-        }
-    }
-    return returnValue;
+		var returnValue = -1;
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Selected) {
+						if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
+								returnValue = i;
+								break;				
+						}
+				}
+		}
+		return returnValue;
 }
 
 
@@ -542,36 +576,36 @@ function getTargetCardIndex() {
 // can the selected targetCard be defeated by the selected resource cards
 //
 function canTargetBeDefeatedBySelectedResources() {
-    var returnValue = false;
+		var returnValue = false;
 
-    // get index of selected target
-    var selectedTargetIndex = getTargetCardIndex();
-    returnValue = canCardBeBeatenByResources(selectedTargetIndex, true);
+		// get index of selected target
+		var selectedTargetIndex = getTargetCardIndex();
+		returnValue = canCardBeBeatenByResources(selectedTargetIndex, true);
 
-    return returnValue;
+		return returnValue;
 }
 
 //
 // check that both a target card and a resource card are selected
 //
 function checkIfTargetAndResourceCardsAreSelected() {
-    var returnValue = false;
-    var palaceOrCapitalCardSelected = false;
-    var resourceCardSelected = false;
+		var returnValue = false;
+		var palaceOrCapitalCardSelected = false;
+		var resourceCardSelected = false;
 
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Selected == true) {
-            if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
-                //alert('selected ' + deck[i].Name);
-                palaceOrCapitalCardSelected = true;
-            } else {
-                //alert('selected ' + deck[i].Name);
-                resourceCardSelected = true;
-            }
-        }
-    }
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Selected == true) {
+						if (deck[i].Location.substring(0, 3) == 'pal' || deck[i].Location.substring(0, 3) == 'cap') {
+								//alert('selected ' + deck[i].Name);
+								palaceOrCapitalCardSelected = true;
+						} else {
+								//alert('selected ' + deck[i].Name);
+								resourceCardSelected = true;
+						}
+				}
+		}
 
-    return (palaceOrCapitalCardSelected && resourceCardSelected);
+		return (palaceOrCapitalCardSelected && resourceCardSelected);
 }
 
 
@@ -579,28 +613,28 @@ function checkIfTargetAndResourceCardsAreSelected() {
 // deselect cards on specified row
 //
 function deselectAllCardsOnRow(rowName) {
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].Location.substring(0, rowName.length) == rowName) {
-            if (deck[i].Selected == true) {
-                deck[i].Selected = false;
-                $(deck[i].selector).removeClass('cardselected');
-            }
-        }
-    }
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].Location.substring(0, rowName.length) == rowName) {
+						if (deck[i].Selected == true) {
+								deck[i].Selected = false;
+								$(deck[i].selector).removeClass('cardselected');
+						}
+				}
+		}
 }
 
 //
 // get card index based on id
 //
 function getCardIndexByID(theID) {
-    var returnValue = -1;
-    for (var i = 0; i < deck.length; i++) {
-        if (deck[i].divID == theID) {
-            returnValue = i;
-            break;
-        }
-    }
-    return returnValue;
+		var returnValue = -1;
+		for (var i = 0; i < deck.length; i++) {
+				if (deck[i].divID == theID) {
+						returnValue = i;
+						break;
+				}
+		}
+		return returnValue;
 }
 
 //
@@ -608,9 +642,9 @@ function getCardIndexByID(theID) {
 //
 function adamanCreateDeck() {
 	var difficulty = getSetting('difficulty');
-  var adamanDeck = decktetCreateDeck();
+	var adamanDeck = decktetCreateDeck();
 	//This one can be used but would be complicated to program, so ditch it.
-  adamanDeck = decktetRemoveTheExcuse(adamanDeck);
+	adamanDeck = decktetRemoveTheExcuse(adamanDeck);
 	//The normal deck.
 	if (difficulty == "normal") {
 		adamanDeck = decktetRemoveCOURT(adamanDeck);
@@ -648,16 +682,16 @@ function adamanCreateDeck() {
 		personalityTotal = 14;
 	}
 	
-  adamanDeck = decktetShuffle(adamanDeck);
-  for (i = 0; i < adamanDeck.length; i++) {
-    adamanDeck[i].Location = 'drawDeckLocation';
-    adamanDeck[i].divID = adamanDeck[i].Name.replace(/\s+/g, '');
-    adamanDeck[i].selector = '#' + adamanDeck[i].divID;
+	adamanDeck = decktetShuffle(adamanDeck);
+	for (i = 0; i < adamanDeck.length; i++) {
+		adamanDeck[i].Location = 'drawDeckLocation';
+		adamanDeck[i].divID = adamanDeck[i].Name.replace(/\s+/g, '');
+		adamanDeck[i].selector = '#' + adamanDeck[i].divID;
 		//Tweak values of pawns and courts.
 		if (adamanDeck[i].Rank == "PAWN" || adamanDeck[i].Rank == "COURT")
 			adamanDeck[i].Value = 10;
-  }
-  return adamanDeck;
+	}
+	return adamanDeck;
 }
 
 //
@@ -668,9 +702,10 @@ function createOnScreenCard(card,index) {
 	var cardImage = card.Image;
 	if (emblacken && (card.Suit1 == "Moons" ||card.Suit2 == "Moons" ||card.Suit3 == "Moons"))
 		cardImage = cardImage.split(".png")[0] + "_black.png";
-  var imageLit = '<div id="' + card.divID + '" class="card'  + (card.Face ? ' face' : '') + '" style="background-image:url(CardImages/' + cardImage + ');" title="' + card.Name + '"></div>';
-  $(imageLit).appendTo('#gamewrapper').hide();
+	var imageLit = '<div id="' + card.divID + '" class="card'	+ (card.Face ? ' face' : '') + '" style="background-image:url(CardImages/' + cardImage + ');" title="' + card.Name + '"></div>';
+	$(imageLit).appendTo('#gamewrapper').hide();
 	if (card.Face) {
+		//Also put the image into the personality list.
 		var perId = card.Name.replace("the ", "per").replace(" ","_");
 		$("#" + perId + " div.card").css("background-image","url(CardImages/" + cardImage + ")").addClass("uncontrolled");
 	}
@@ -680,7 +715,7 @@ function createOnScreenCard(card,index) {
 // stack the cards
 //
 function stackDeck() {
-    for (var i = 0; i < deck.length; i++) {
+		for (var i = 0; i < deck.length; i++) {
 		$(deck[i].selector).css("z-index",deck.length-i);
 	}
 }
@@ -697,7 +732,7 @@ function pleaseWaitOff() { $('#pleaseWait').hide();}
 //
 
 function gameIsOver(endCondition,delayUnits) {
-    gameOVER = true;
+	gameOVER = true;
 	endCondition = typeof endCondition !== 'undefined' ? endCondition : "noMoves";
 	if (endCondition == "victory") {
 		//We have some more scoring to do.
@@ -708,10 +743,10 @@ function gameIsOver(endCondition,delayUnits) {
 		score = 0;
 		$('#runningScore').html(score.toString());
 	}
-    $('#finalScore').html(score.toString());
+	$('#finalScore').html(score.toString());
 	switch(endCondition) {
 		case "victory":
-			$("#endCondition").html("Victory is yours!  You have control of everyone who matters and can safely seize the throne.");
+			$("#endCondition").html("Victory is yours!	You have control of everyone who matters and can safely seize the throne.");
 			break;
 		case "palace":
 			$("#endCondition").html("The opposition in the Palace has become too great.");
@@ -720,7 +755,7 @@ function gameIsOver(endCondition,delayUnits) {
 			$("#endCondition").html("There are no more possible moves.");
 	}
 	delayUnits = typeof delayUnits !== 'undefined' ? delayUnits : 0;
-    $('#gameOver').delay(delayUnits * speed).show(speed);
+	$('#gameOver').delay(delayUnits * speed).show(speed);
 }
 
 function getSetting(setting) {
@@ -731,7 +766,8 @@ function getSetting(setting) {
 		} catch (e) {
 			value = defaultSettings[setting];
 		}
-		if (setting == 'blackmoons' || setting == 'magnification')  value = (value.toLowerCase() === "true");
+		if (setting == 'blackmoons' || setting == 'magnification')	
+			value = (value.toLowerCase() === "true");
 		return value;
 	} else {
 		return defaultSettings[setting];

@@ -238,7 +238,7 @@ p.callout {
 }
 
 .pers.face.controlled {
-    box-shadow: 6px 8px 4px #2B7700;
+    box-shadow: 6px 8px 4px rgba(0,119,0,0.66);
 }
 
 .embiggen1 .card.face {
@@ -254,7 +254,7 @@ p.callout {
 }
 
 .embiggen1 .card.pers.face.controlled {
-    box-shadow: -6px -8px 4px #2B7700;
+    box-shadow: -6px -8px 4px rgba(0,119,0,0.66);
 }
 
 .cardselected {
