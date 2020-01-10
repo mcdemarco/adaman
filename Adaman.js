@@ -356,7 +356,7 @@ function createOnScreenCards(again) {
 	if (again) {
 		//Delete existing cards.
 		$(".card:not(.pers)").remove();
-		$(".pers").css("background-image","none");
+		$(".pers").css("background-image","none").removeClass("controlled").removeClass("uncontrolled");
 	}
   var p = $('#drawDeckLocation').offset();
   for (var i = deck.length - 1; i >= 0; i--) {
@@ -503,8 +503,12 @@ function discardCard(cardIndex,delayUnits) {
   $(deck[cardIndex].selector).removeClass('cardselected');
 	$(deck[cardIndex].selector).css("z-index",delayUnits);
   moveCardToSpace(cardIndex, 'discardDeckLocation',1);
-	if (deck[cardIndex].Face)
+	if (deck[cardIndex].Face) {
 		countPersonality(delayUnits);
+		//Mark personality controlled in the personality display.
+		var perId = deck[cardIndex].Name.replace("the ", "per").replace(" ","_");
+		$("#" + perId + " div.card").removeClass("uncontrolled").addClass("controlled");
+	}
 }
 
 function countPersonality(delayUnits) {
@@ -668,7 +672,7 @@ function createOnScreenCard(card,index) {
   $(imageLit).appendTo('#gamewrapper').hide();
 	if (card.Face) {
 		var perId = card.Name.replace("the ", "per").replace(" ","_");
-		$("#" + perId + " div.card").css("background-image","url(CardImages/" + cardImage + ")");
+		$("#" + perId + " div.card").css("background-image","url(CardImages/" + cardImage + ")").addClass("uncontrolled");
 	}
 }
 

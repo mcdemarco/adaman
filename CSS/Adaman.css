@@ -229,8 +229,32 @@ p.callout {
     box-shadow: 6px 8px 4px #740;
 }
 
+.pers.face {
+    box-shadow: none;
+}
+
+.pers.face.uncontrolled {
+    box-shadow: 6px 8px 4px #700;
+}
+
+.pers.face.controlled {
+    box-shadow: 6px 8px 4px #2B7700;
+}
+
 .embiggen1 .card.face {
     box-shadow: -6px -8px 4px #740;
+}
+
+.embiggen1 .card.pers.face {
+    box-shadow: none;
+}
+
+.embiggen1 .card.pers.face.uncontrolled {
+    box-shadow: -6px -8px 4px #700;
+}
+
+.embiggen1 .card.pers.face.controlled {
+    box-shadow: -6px -8px 4px #2B7700;
 }
 
 .cardselected {
