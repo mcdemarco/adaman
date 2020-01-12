@@ -41,6 +41,8 @@
             <div id="deckcolumn">
 
 		    <div id="title">Adaman</div>
+		    <div id="startButton" class="button">New Game</div>
+		    <div id="replayButton" class="button">Replay</div>
 		    <div class="deckrow">
 			    <div class="decklabel">Draw Deck</div>
 			    <div class="cardspace full" id="drawDeckLocation"></div>
@@ -49,19 +51,15 @@
 			    <div class="decklabel">Discards</div>
 			    <div class="cardspace" id="discardDeckLocation"></div>
 		    </div>
-		    <div class="deckrow">
-			    Score:&nbsp;<span id="runningScore">0</span>
-		    </div>
 		    <div class="deckrow" title="Personalities controlled so far.">
 			    <span id="personalitiesButton" class="linky" title="Click to view all Personalities.">Personalities:</span>&nbsp;<span title="Personalities controlled" id="personalityCount">0</span>
 		    </div>
-		    
-		    <div id="startButton" class="button">New Game</div>
-		    <div id="replayButton" class="button">Replay</div>
-		    <hr />
+		    <div class="deckrow">
+			    Score:&nbsp;<span id="runningScore">0</span>
+		    </div>
 		    <div class="deckrow">
 			    <span id="showStoryButton" class="linky">Rules</span> &nbsp;
-			    <span id="settingsButton" class="linky" title="settings">&#9881;</span>  &nbsp;
+			    <span id="settingsButton" title="settings">&#9881;</span> &nbsp;
 			    <span id="creditsButton" class="linky">Credits</span>
 		    </div>
             </div>
@@ -112,34 +110,38 @@
 
 						<div id="personalityPanelWrapper">
 
-										<h2>Personality List</h2>
+							<!-- 
+										<h2>Personalities</h2>
 
-										<p>These are the personalities for the current game.  Your controlled personalities are marked in green.  
-											<!--  (Start a new game after changing settings to get the new personality list.)--></p>
+										<p>These are the personalities for the current game.  Your controlled personalities are marked in green. </p> 
+							 -->				<!--  (Start a new game after changing settings to get the new personality list.)-->
 										
 										<div class="gamerow">
-														<div class="backgroundtext">Personalities</div>
 														<div class="cardspace" id = "perAUTHOR"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perPAINTER"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perSAVAGE"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perSAILOR"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perSOLDIER"><div class="pers face card"></div></div>
-														<div class="cardspace" id = "perLUNATIC"><div class="pers face card"></div></div>
-														<div class="cardspace" id = "perPENITENT"><div class="pers face card"></div></div>
 										</div>
 										<div class="gamerow">
+														<div class="backgroundtext" title="Click anywhere to close.">Personalities</div>
+														<div class="cardspace" id = "perLUNATIC"><div class="pers face card"></div></div>
+														<div class="cardspace" id = "perPENITENT"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perDIPLOMAT"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perMERCHANT"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perHUNTRESS"><div class="pers face card"></div></div>
+										</div>
+										<div class="gamerow">
 														<div class="cardspace" id = "perBARD"><div class="pers face card"></div></div>
+														<div class="cardspace empty"></div>
 														<div class="cardspace" id = "perLIGHT_KEEPER"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perWATCHMAN"><div class="pers face card"></div></div>
 														<div class="cardspace" id = "perCONSUL"><div class="pers face card"></div></div>
 										</div>
 
-										<div class="buttonWrapper">
+										<!-- <div class="buttonWrapper">
 														<div class="close button">Close</div>
-										</div>
+										</div>-->
 						</div>
 
     </div>

@@ -72,6 +72,9 @@ function initialise_GamePage() {
 		$('.panel').hide();
 		$('#personalityPanel').fadeIn(speed);
 	});
+	$('#personalityPanel').click(function () {
+		$('.panel').hide();
+	});
 	$('.close.button').click(function () {
 		$('.panel').hide();
 	});

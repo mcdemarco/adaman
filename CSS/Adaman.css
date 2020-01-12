@@ -13,6 +13,12 @@ Creative Commons Attribution NonCommercial ShareAlike 3.0 License.
 
 * {
     box-model:border-box;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
 }
 
 @font-face {
@@ -25,7 +31,8 @@ body {
     font-family: 'Fortune Letters', Futura, Geneva, sans-serif;
     color: #740;
     margin:0;
-    padding:0;
+    padding:0 10% 0 5%;
+    height: 100vh;
 }
 
 #settingsPanel div p:first-child {
@@ -45,9 +52,8 @@ p.callout {
 #gamewrapper {
     margin:auto;
     white-space:nowrap;
-    min-height:572px;
+    min-height:580px;
     max-width:1000px;
-    padding:10px;
 }
 
 .embiggen #gamewrapper {
@@ -69,7 +75,7 @@ p.callout {
 }
 
 #deckcolumn, #personalityColumn {
-    padding:2px;
+    padding:10px 15px 10px 5px;
     min-width:190px;
     width:20%;
     height:550px;
@@ -138,19 +144,9 @@ p.callout {
 }
 
 .gamerow {
-    padding:4px;
-    float:left;
-    height:187px;
-    width:720px;
+    padding:4px 4px 0 0;
     text-align:center;
-    min-width:680px;
-}
-
-.embiggen .gamerow {
-    padding:2px;
-    height:163px;
-    width:600px;
-    min-width:550px;
+    min-width:695px;
 }
 
 .deckrow {
@@ -191,6 +187,10 @@ p.callout {
 
 .embiggen .cardspace {
     margin:2px;
+}
+
+.cardspace.empty {
+    border:0;
 }
 
 .backgroundtext, .decklabel {
@@ -272,33 +272,27 @@ p.callout {
     top:0;
     left:0;
     width:auto;
-    height:100%;
+    height:auto;
     background-color: rgba(175,97,47,0.90);
     color:white;
     font-weight:normal;
     font-size:12pt;
-    padding: 5% 20%;
+    padding: 5% 10%;
     z-index:51;
 }
 
 #personalityPanel.panel {
-    padding: 2% 5%;
+    padding: 0 10% 2% 10%;
     text-align:center;
-    width:100%;
 }
 
 #personalityPanelWrapper {
-    margin:0 auto;
-    max-width:1000px;
+    max-width:955px;
     text-align:center;
 }
 
 #personalityPanelWrapper p {
     text-align:center;
-}
-
-#personalityPanel .gamerow, .embiggen #personalityPanel .gamerow {
-    width:1000px;
 }
 
 #personalityPanel div.buttonWrapper {
@@ -307,11 +301,7 @@ p.callout {
     clear:both;
 }
 
-#gameovernomoves {
-    text-shadow:1px 1px 0px #740;
-}
-
-#gameOverPalace {
+#gameovernomoves, #gameOverPalace {
     text-shadow:1px 1px 0px #740;
 }
 
@@ -349,6 +339,10 @@ hr {
 .linky {
     cursor:pointer;
     margin-top:5px;
+    text-decoration: underline;
+    text-decoration-style: double;
+    text-decoration-color: #9A6520;
+    text-decoration-thickness: from-font;
 }
 
 a:link {
