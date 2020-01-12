@@ -355,6 +355,10 @@ hr {
 .linky {
     cursor:pointer;
     margin-top:5px;
+    text-decoration: underline;
+    text-decoration-style: double;
+    text-decoration-color: #9A6520;
+    text-decoration-thickness: from-font;
 }
 
 a:link {
