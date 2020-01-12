@@ -31,7 +31,8 @@ body {
     font-family: 'Fortune Letters', Futura, Geneva, sans-serif;
     color: #740;
     margin:0;
-    padding:0;
+    padding:0 10% 0 5%;
+    height: 100vh;
 }
 
 #settingsPanel div p:first-child {
@@ -51,9 +52,8 @@ p.callout {
 #gamewrapper {
     margin:auto;
     white-space:nowrap;
-    min-height:572px;
+    min-height:580px;
     max-width:1000px;
-    padding:10px;
 }
 
 .embiggen #gamewrapper {
@@ -144,19 +144,9 @@ p.callout {
 }
 
 .gamerow {
-    padding:4px;
-    float:left;
-    height:187px;
-    width:720px;
+    padding:4px 4px 0 0;
     text-align:center;
-    min-width:680px;
-}
-
-.embiggen .gamerow {
-    padding:2px;
-    height:163px;
-    width:600px;
-    min-width:550px;
+    min-width:695px;
 }
 
 .deckrow {
@@ -292,7 +282,7 @@ p.callout {
 }
 
 #personalityPanel.panel {
-    padding: 10px 10%;
+    padding: 0 10% 2% 10%;
     text-align:center;
 }
 
